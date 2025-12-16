@@ -1,0 +1,871 @@
+{
+    "name": "QBA_IncrementalLoad_tier_1_views",
+    "properties": {
+        "activities": [
+            {
+                "name": "InitialLookup",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "AzureSqlSource",
+                        "sqlReaderQuery": "SELECT  * FROM [Synapse].[IncrementalControl] where IS_DELETED = 0 AND IS_ACTIVE = 1 and LAST_MODIFIED_DATE is not null\nand YF_SSV = 'Question Based Assessment'\norder by IS_ACTIVE desc;",
+                        "queryTimeout": "02:00:00",
+                        "partitionOption": "None"
+                    },
+                    "dataset": {
+                        "referenceName": "SynwIncrementalControl",
+                        "type": "DatasetReference"
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "ForEach1",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "InitialLookup",
+                        "dependencyConditions": [
+                            "Completed"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('InitialLookup').output.value",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "If Condition1",
+                            "type": "IfCondition",
+                            "dependsOn": [],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "expression": {
+                                    "value": "@equals(item().INCREMENTAL_FLAG,'Y')",
+                                    "type": "Expression"
+                                },
+                                "ifFalseActivities": [
+                                    {
+                                        "name": "FullloadCopy_source_synapse",
+                                        "type": "Copy",
+                                        "dependsOn": [],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "source": {
+                                                "type": "AzureSqlSource",
+                                                "sqlReaderQuery": {
+                                                    "value": "@item().FULL_QUERY",
+                                                    "type": "Expression"
+                                                },
+                                                "queryTimeout": "02:00:00",
+                                                "isolationLevel": "ReadCommitted",
+                                                "partitionOption": "None"
+                                            },
+                                            "sink": {
+                                                "type": "ParquetSink",
+                                                "storeSettings": {
+                                                    "type": "AzureBlobFSWriteSettings",
+                                                    "maxConcurrentConnections": 4
+                                                },
+                                                "formatSettings": {
+                                                    "type": "ParquetWriteSettings"
+                                                }
+                                            },
+                                            "enableStaging": false,
+                                            "parallelCopies": 10,
+                                            "translator": {
+                                                "type": "TabularTranslator",
+                                                "typeConversion": true,
+                                                "typeConversionSettings": {
+                                                    "allowDataTruncation": true,
+                                                    "treatBooleanAsNumber": false
+                                                }
+                                            }
+                                        },
+                                        "inputs": [
+                                            {
+                                                "referenceName": "SynwIncrementalControl",
+                                                "type": "DatasetReference"
+                                            }
+                                        ],
+                                        "outputs": [
+                                            {
+                                                "referenceName": "DS_ADLS_IncParquet_n",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "SchemaName": {
+                                                        "value": "@item().SOURCE_SCHEMA",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TableName": {
+                                                        "value": "@item().TABLE_NAME",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "Fullload Get Metadata",
+                                        "type": "GetMetadata",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "FullloadCopy_source_synapse",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "dataset": {
+                                                "referenceName": "DS_ADLS_incfolder",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "SchemaName": {
+                                                        "value": "@item().SOURCE_SCHEMA",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TableName": {
+                                                        "value": "@item().TABLE_NAME",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            },
+                                            "fieldList": [
+                                                "childItems"
+                                            ],
+                                            "storeSettings": {
+                                                "type": "AzureBlobFSReadSettings",
+                                                "recursive": true,
+                                                "enablePartitionDiscovery": false
+                                            },
+                                            "formatSettings": {
+                                                "type": "ParquetReadSettings"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "Fullload_metadata_lookup",
+                                        "type": "Lookup",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "Fullload Get Metadata",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "source": {
+                                                "type": "AzureSqlSource",
+                                                "sqlReaderQuery": {
+                                                    "value": "DECLARE @output nvarchar(max) = N'@{activity('Fullload Get Metadata').output.childItems}';\nselect max(FileName) as MaxFileName from openJson(@output) with (FileName varchar(200) '$.name');",
+                                                    "type": "Expression"
+                                                },
+                                                "queryTimeout": "02:00:00",
+                                                "partitionOption": "None"
+                                            },
+                                            "dataset": {
+                                                "referenceName": "ASDVarDataset3",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "TableName": {
+                                                        "value": "@item().TABLE_NAME",
+                                                        "type": "Expression"
+                                                    },
+                                                    "SchemaName": "@item().TARGET_SCHEMA"
+                                                }
+                                            },
+                                            "firstRowOnly": false
+                                        }
+                                    },
+                                    {
+                                        "name": "Fullloadcopy_synapase_sqlserver",
+                                        "type": "Copy",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "Fullload_metadata_lookup",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [
+                                            {
+                                                "name": "Source",
+                                                "value": "question-based-assessment/@{concat('Synapse.',item().TABLE_NAME)}/@{concat('Synapse.',item().TABLE_NAME,'_',addhours(formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss'),10),'.parquet')}"
+                                            },
+                                            {
+                                                "name": "Destination",
+                                                "value": "@{item().TARGET_SCHEMA}.@{item().TABLE_NAME}"
+                                            }
+                                        ],
+                                        "typeProperties": {
+                                            "source": {
+                                                "type": "ParquetSource",
+                                                "storeSettings": {
+                                                    "type": "AzureBlobFSReadSettings",
+                                                    "recursive": false,
+                                                    "wildcardFolderPath": {
+                                                        "value": "@concat('Synapse.',item().TABLE_NAME)",
+                                                        "type": "Expression"
+                                                    },
+                                                    "wildcardFileName": {
+                                                        "value": "@activity('FullLoad_metadata_lookup').output.value[0].MaxFileName",
+                                                        "type": "Expression"
+                                                    },
+                                                    "enablePartitionDiscovery": false
+                                                },
+                                                "formatSettings": {
+                                                    "type": "ParquetReadSettings"
+                                                }
+                                            },
+                                            "sink": {
+                                                "type": "AzureSqlSink",
+                                                "preCopyScript": {
+                                                    "value": "IF OBJECT_ID('@{item().TARGET_SCHEMA}.@{item().TABLE_NAME}') IS NOT NULL\nDELETE FROM @{item().TARGET_SCHEMA}.@{item().TABLE_NAME}",
+                                                    "type": "Expression"
+                                                },
+                                                "maxConcurrentConnections": 4,
+                                                "writeBehavior": "insert",
+                                                "sqlWriterUseTableLock": true,
+                                                "disableMetricsCollection": false
+                                            },
+                                            "enableStaging": false,
+                                            "parallelCopies": 20,
+                                            "translator": {
+                                                "type": "TabularTranslator",
+                                                "typeConversion": true,
+                                                "typeConversionSettings": {
+                                                    "allowDataTruncation": true,
+                                                    "treatBooleanAsNumber": false
+                                                }
+                                            }
+                                        },
+                                        "inputs": [
+                                            {
+                                                "referenceName": "DS_ADLS_IncParquet_n",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "SchemaName": {
+                                                        "value": "@item().SOURCE_SCHEMA",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TableName": {
+                                                        "value": "@item().TABLE_NAME",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            }
+                                        ],
+                                        "outputs": [
+                                            {
+                                                "referenceName": "ASDVarDataset3",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "TableName": "@item().TABLE_NAME",
+                                                    "SchemaName": {
+                                                        "value": "@item().TARGET_SCHEMA",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "FULL_Row_count_update",
+                                        "type": "Script",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "Fullloadcopy_synapase_sqlserver",
+                                                "dependencyConditions": [
+                                                    "Completed"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "linkedServiceName": {
+                                            "referenceName": "UpdatePipelineLogs",
+                                            "type": "LinkedServiceReference"
+                                        },
+                                        "typeProperties": {
+                                            "scripts": [
+                                                {
+                                                    "parameters": [
+                                                        {
+                                                            "name": "rowsRead",
+                                                            "type": "Int32",
+                                                            "value": {
+                                                                "value": "@activity('FullloadCopy_source_synapse').output.rowsRead",
+                                                                "type": "Expression"
+                                                            },
+                                                            "direction": "Input"
+                                                        },
+                                                        {
+                                                            "name": "rowsCopied",
+                                                            "type": "Int32",
+                                                            "value": {
+                                                                "value": "@activity('Fullloadcopy_synapase_sqlserver').output.rowsCopied",
+                                                                "type": "Expression"
+                                                            },
+                                                            "direction": "Input"
+                                                        },
+                                                        {
+                                                            "name": "schemaName",
+                                                            "type": "String",
+                                                            "value": {
+                                                                "value": "@item().SOURCE_SCHEMA",
+                                                                "type": "Expression"
+                                                            },
+                                                            "direction": "Input"
+                                                        },
+                                                        {
+                                                            "name": "tableName",
+                                                            "type": "String",
+                                                            "value": {
+                                                                "value": "@item().TABLE_NAME",
+                                                                "type": "Expression"
+                                                            },
+                                                            "direction": "Input"
+                                                        }
+                                                    ],
+                                                    "type": "Query",
+                                                    "text": {
+                                                        "value": "update Synapse.IncrementalControl \n\nSET rowsRead = @rowsRead,\nrowsCopied = @rowsCopied\n\nWHERE SOURCE_SCHEMA = @schemaName\nAND TABLE_NAME = @tableName;",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            ],
+                                            "scriptBlockExecutionTimeout": "02:00:00"
+                                        }
+                                    }
+                                ],
+                                "ifTrueActivities": [
+                                    {
+                                        "name": "IncLoadCopy_source_synapse",
+                                        "type": "Copy",
+                                        "dependsOn": [],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "source": {
+                                                "type": "AzureSqlSource",
+                                                "sqlReaderQuery": {
+                                                    "value": "@{item().FULL_QUERY} where @{item().MODIFIED_BENCHMARK_FIELD} > '@{item().LAST_MODIFIED_DATE}'",
+                                                    "type": "Expression"
+                                                },
+                                                "queryTimeout": "02:00:00",
+                                                "isolationLevel": "ReadCommitted",
+                                                "partitionOption": "None"
+                                            },
+                                            "sink": {
+                                                "type": "ParquetSink",
+                                                "storeSettings": {
+                                                    "type": "AzureBlobFSWriteSettings"
+                                                },
+                                                "formatSettings": {
+                                                    "type": "ParquetWriteSettings"
+                                                }
+                                            },
+                                            "enableStaging": false,
+                                            "translator": {
+                                                "type": "TabularTranslator",
+                                                "typeConversion": true,
+                                                "typeConversionSettings": {
+                                                    "allowDataTruncation": true,
+                                                    "treatBooleanAsNumber": false
+                                                }
+                                            }
+                                        },
+                                        "inputs": [
+                                            {
+                                                "referenceName": "SynwIncrementalControl",
+                                                "type": "DatasetReference"
+                                            }
+                                        ],
+                                        "outputs": [
+                                            {
+                                                "referenceName": "DS_ADLS_IncParquet_n",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "SchemaName": {
+                                                        "value": "@item().SOURCE_SCHEMA",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TableName": {
+                                                        "value": "@item().TABLE_NAME",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "IncLoadGet Metadata",
+                                        "type": "GetMetadata",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "IncLoadCopy_source_synapse",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "dataset": {
+                                                "referenceName": "DS_ADLS_incfolder",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "SchemaName": {
+                                                        "value": "@item().SOURCE_SCHEMA",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TableName": {
+                                                        "value": "@item().TABLE_NAME",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            },
+                                            "fieldList": [
+                                                "childItems"
+                                            ],
+                                            "storeSettings": {
+                                                "type": "AzureBlobFSReadSettings",
+                                                "recursive": true,
+                                                "modifiedDatetimeStart": null,
+                                                "modifiedDatetimeEnd": null,
+                                                "enablePartitionDiscovery": false
+                                            },
+                                            "formatSettings": {
+                                                "type": "ParquetReadSettings"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "IncLoad_metadata_lookup",
+                                        "type": "Lookup",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "IncLoadGet Metadata",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "source": {
+                                                "type": "AzureSqlSource",
+                                                "sqlReaderQuery": {
+                                                    "value": "DECLARE @output nvarchar(max) = N'@{activity('IncLoadGet Metadata').output.childItems}';\nselect max(FileName) as MaxFileName from openJson(@output) with (FileName varchar(200) '$.name');",
+                                                    "type": "Expression"
+                                                },
+                                                "queryTimeout": "02:00:00",
+                                                "partitionOption": "None"
+                                            },
+                                            "dataset": {
+                                                "referenceName": "ASDVarDataset3",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "TableName": "@item().TABLE_NAME",
+                                                    "SchemaName": "@item().TARGET_SCHEMA"
+                                                }
+                                            },
+                                            "firstRowOnly": false
+                                        }
+                                    },
+                                    {
+                                        "name": "IncLoadcopy_synapase_sqlserver",
+                                        "type": "Copy",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "IncLoad_metadata_lookup",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "source": {
+                                                "type": "ParquetSource",
+                                                "storeSettings": {
+                                                    "type": "AzureBlobFSReadSettings",
+                                                    "recursive": false,
+                                                    "modifiedDatetimeStart": null,
+                                                    "modifiedDatetimeEnd": null,
+                                                    "wildcardFolderPath": {
+                                                        "value": "@concat('Synapse.',item().TABLE_NAME)",
+                                                        "type": "Expression"
+                                                    },
+                                                    "wildcardFileName": {
+                                                        "value": "@activity('IncLoad_metadata_lookup').output.value[0].MaxFileName",
+                                                        "type": "Expression"
+                                                    },
+                                                    "enablePartitionDiscovery": false
+                                                },
+                                                "formatSettings": {
+                                                    "type": "ParquetReadSettings"
+                                                }
+                                            },
+                                            "sink": {
+                                                "type": "AzureSqlSink",
+                                                "writeBehavior": "upsert",
+                                                "upsertSettings": {
+                                                    "useTempDB": true,
+                                                    "keys": {
+                                                        "value": "@array(split(item().KEY_COLUMNS,','))",
+                                                        "type": "Expression"
+                                                    }
+                                                },
+                                                "sqlWriterUseTableLock": true,
+                                                "disableMetricsCollection": true
+                                            },
+                                            "enableStaging": false,
+                                            "translator": {
+                                                "type": "TabularTranslator",
+                                                "typeConversion": true,
+                                                "typeConversionSettings": {
+                                                    "allowDataTruncation": true,
+                                                    "treatBooleanAsNumber": false
+                                                }
+                                            }
+                                        },
+                                        "inputs": [
+                                            {
+                                                "referenceName": "DS_ADLS_IncParquet_n",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "SchemaName": {
+                                                        "value": "@item().SOURCE_SCHEMA",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TableName": {
+                                                        "value": "@item().TABLE_NAME",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            }
+                                        ],
+                                        "outputs": [
+                                            {
+                                                "referenceName": "ASDVarDataset3",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "TableName": "@item().TABLE_NAME",
+                                                    "SchemaName": {
+                                                        "value": "@item().TARGET_SCHEMA",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "INC_Rowcount_update",
+                                        "type": "Script",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "IncLoadcopy_synapase_sqlserver",
+                                                "dependencyConditions": [
+                                                    "Completed"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "linkedServiceName": {
+                                            "referenceName": "UpdatePipelineLogs",
+                                            "type": "LinkedServiceReference"
+                                        },
+                                        "typeProperties": {
+                                            "scripts": [
+                                                {
+                                                    "parameters": [
+                                                        {
+                                                            "name": "rowsRead",
+                                                            "type": "Int32",
+                                                            "value": {
+                                                                "value": "@activity('IncLoadCopy_source_synapse').output.rowsRead",
+                                                                "type": "Expression"
+                                                            },
+                                                            "direction": "Input"
+                                                        },
+                                                        {
+                                                            "name": "rowsCopied",
+                                                            "type": "Int32",
+                                                            "value": {
+                                                                "value": "@activity('IncLoadcopy_synapase_sqlserver').output.rowsCopied",
+                                                                "type": "Expression"
+                                                            },
+                                                            "direction": "Input"
+                                                        },
+                                                        {
+                                                            "name": "schemaName",
+                                                            "type": "String",
+                                                            "value": {
+                                                                "value": "@item().SOURCE_SCHEMA",
+                                                                "type": "Expression"
+                                                            },
+                                                            "direction": "Input"
+                                                        },
+                                                        {
+                                                            "name": "tableName",
+                                                            "type": "String",
+                                                            "value": {
+                                                                "value": "@item().TABLE_NAME",
+                                                                "type": "Expression"
+                                                            },
+                                                            "direction": "Input"
+                                                        }
+                                                    ],
+                                                    "type": "Query",
+                                                    "text": {
+                                                        "value": "update Synapse.IncrementalControl \n\nSET rowsRead = @rowsRead,\nrowsCopied = @rowsCopied\n\nWHERE SOURCE_SCHEMA =@schemaName\nAND TABLE_NAME= @tableName;",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            ],
+                                            "scriptBlockExecutionTimeout": "02:00:00"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "If Condition2",
+                            "type": "IfCondition",
+                            "dependsOn": [
+                                {
+                                    "activity": "If Condition1",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "expression": {
+                                    "value": "@not(empty(item().MODIFIED_BENCHMARK_FIELD))",
+                                    "type": "Expression"
+                                },
+                                "ifTrueActivities": [
+                                    {
+                                        "name": "LAST_MODIFIED_DATE",
+                                        "type": "Lookup",
+                                        "dependsOn": [],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "source": {
+                                                "type": "AzureSqlSource",
+                                                "sqlReaderQuery": {
+                                                    "value": "select max(@{item().MODIFIED_BENCHMARK_FIELD}) as LAST_MODIFIED_DATE \nfrom @{item().TARGET_SCHEMA}.@{item().TABLE_NAME}; ",
+                                                    "type": "Expression"
+                                                },
+                                                "queryTimeout": "02:00:00",
+                                                "partitionOption": "None"
+                                            },
+                                            "dataset": {
+                                                "referenceName": "ASDVarDataset2",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "SchemaName": {
+                                                        "value": "Synapse",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TableName": "@item().TABLE_NAME"
+                                                }
+                                            },
+                                            "firstRowOnly": false
+                                        }
+                                    },
+                                    {
+                                        "name": "Update_LAST_MODIFIED_DATE",
+                                        "type": "Lookup",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "LAST_MODIFIED_DATE",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "source": {
+                                                "type": "AzureSqlSource",
+                                                "sqlReaderQuery": {
+                                                    "value": "update Synapse.IncrementalControl set LAST_MODIFIED_DATE = '@{activity('LAST_MODIFIED_DATE').output.value[0].LAST_MODIFIED_DATE}' , INCREMENTAL_FLAG = 'Y' where TABLE_NAME = '@{item().TABLE_NAME}'\nselect 1 as output;",
+                                                    "type": "Expression"
+                                                },
+                                                "queryTimeout": "02:00:00",
+                                                "partitionOption": "None"
+                                            },
+                                            "dataset": {
+                                                "referenceName": "ASDVarDataset2",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "SchemaName": "Synapse",
+                                                    "TableName": "@item().TABLE_NAME"
+                                                }
+                                            },
+                                            "firstRowOnly": false
+                                        }
+                                    },
+                                    {
+                                        "name": "Update_JobRunTime_INC",
+                                        "type": "Lookup",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "Update_LAST_MODIFIED_DATE",
+                                                "dependencyConditions": [
+                                                    "Completed"
+                                                ]
+                                            }
+                                        ],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "source": {
+                                                "type": "AzureSqlSource",
+                                                "sqlReaderQuery": {
+                                                    "value": "update Synapse.IncrementalControl set JobRunTime = DATEADD(HOUR,10,CURRENT_TIMESTAMP) where TABLE_NAME = '@{item().TABLE_NAME}'\nselect 1 as output;",
+                                                    "type": "Expression"
+                                                },
+                                                "queryTimeout": "02:00:00",
+                                                "partitionOption": "None"
+                                            },
+                                            "dataset": {
+                                                "referenceName": "ASDVarDataset2",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "SchemaName": "Synapse",
+                                                    "TableName": "@item().TABLE_NAME"
+                                                }
+                                            },
+                                            "firstRowOnly": false
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "variables": {
+            "MaxFileName": {
+                "type": "String"
+            },
+            "MaxFileName1": {
+                "type": "String"
+            }
+        },
+        "annotations": [],
+        "lastPublishTime": "2025-11-12T00:20:30Z"
+    },
+    "type": "Microsoft.Synapse/workspaces/pipelines"
+}

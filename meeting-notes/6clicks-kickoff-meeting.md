@@ -1,0 +1,53 @@
+## Notes
+
+- Look at 2026 plan to get an external layer of validation and confidence  
+  - Help figure out 2026 stategy  
+- Chief data officer coming in for a few weeks  
+- Two phases  
+  - First around data warehouse, what we do with views on top of operational database, what we do with synapse  
+  - Second is with YellowFin, whether we should replace it or not. It’ll have to be significantly better, may be 5 times better which might be worth looking at  
+- Intros  
+  - Anjali: leading general engineering including data engineering. Been involved with this for 2 years. Took over from previous teams who were maintaining it. Saw lots of issues, tried different approaches.  
+  - Bhanu: joined 0 months ago, tasked to see an alternate root. Using synapse to make yellowfin perform better.  
+  - Jake: principal data engineer, been here for 4 months. Been helping with data infra and how they manage data overall.   
+- High level agenda from andrew  
+  - Keep use of their time to a minimum ( couple of hours during the week with each person) happy to talk to Andrew  
+    - Yellowfin questions  
+  - Can get access to different systems  
+  - Admin access to staging environment could be given  
+    - Access to production database might need to be paired  
+  - Frame the high level mission  
+    - Fairly typical B2B application  
+    - At most 1 million rows in the database  
+      - No tenant has a million rows, a tenant will have 10s of thousand  
+    - Want the users to be able to self-serve analytics in a user friendly manner  
+    - Hopefully in some use cases near real-time, other cases will be nightly refreshes  
+      - At the moment it’s on top of operational database so they get immediate freshness  
+- Likes and dislikes about current platform  
+  - Andrew  
+    - Team of three \+ 1 QA for data engineer  
+    - 30% of support tickets are coming for the analytics platform, only 10% in analytics team. **What categories**  
+    - UX of yellowfin is below the rest of the platform, performance and usability  
+    - *For context, we run 6clicks across about a dozen Azure regions.*  
+    - *Each region has a single Azure SQL Database, which is multi-tenanted.*  
+    - *Tenants are separated by virtue of having a TenantId column on each table.*   
+    - *Our largest region is AU, which has about a few hundred active customers, and a few thousand active users in any one month.*  
+    -    
+  - Anjali  
+    - Main issue is the performance: how does a user expect an analytics platform. Even that is very tedious. The way views are configured. Query takes 5 to 20 minutes. **What backedns does YellowFin support**  
+    - Want to know what low hanging fruits and long-term solutions are. We’re onboarding more customers. We haven’t tested a scenario where all users run queries in parallel. Impacting the reputation.  
+    - Sai has the historical knowledge of what happened and timelines, how long it took them to model. To get in-depth understanding   
+  - Jake  
+    - Problematic schema, migrating them out. So far the loading speed has improved. Still using the same DB just using a different schema. Might look at synaps in the future.  
+- One deep dive session this week with Sai  
+  - Documentation  
+  - Deep dive sessions  
+  - Categories of support issue  
+- What does week to week look like  
+  - Who’s away and who’s not  
+  - Keep this week and start back in Jan  
+- WoW  
+  - Weekly sync  
+  - Request access to things?  
+  - Copy of database schema and problematic ones  
+  - Breakdown of support issues (exec report)
