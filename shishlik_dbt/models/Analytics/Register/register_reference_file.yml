@@ -1,0 +1,23 @@
+version: 2
+
+sources:
+  - name: register_ref_models
+    schema: dbo
+    tables:
+      #Register
+      - name: EntityRegister
+      - name: Issues
+      - name: IssueRisk
+      - name: IssueProvision
+      - name: IssueCustomAttributeData
+      - name: IssueFreeTextControlData
+      - name: IssueOwner
+      - name: IssueUser
+      - name: IssueTag
+      - name: IssueDocument
+      - name: IssueAction
+      - name: IssueActionDocument
+      - name: IssueActionComment
+      - name: IssueRegisterRecord
+      - name: IssueControlStatement
+      - name: IssueThirdParty

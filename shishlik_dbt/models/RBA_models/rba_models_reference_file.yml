@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: rba_models
+    schema: dbo
+    tables:
+      #RBA
+      - name: RBAControlRecommendedAbstractRisk
+      - name: RBAProvisionRecommendedAbstractRisk

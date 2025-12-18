@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: statement_models
+    schema: dbo
+    tables:
+      #Statement
+      - name: Statement
+      - name: StatementComment
+      - name: StatementControl
+      - name: StatementMember
+      - name: StatementOwner
+      - name: StatementPolicy
+      - name: StatementResponse
+      - name: StatementResponseDocument
+      - name: StatementResponseComment

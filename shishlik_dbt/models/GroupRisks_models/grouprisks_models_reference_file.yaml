@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: grouprisks_models
+    schema: dbo
+    tables:
+      #GroupRisks
+      - name: GroupRisks

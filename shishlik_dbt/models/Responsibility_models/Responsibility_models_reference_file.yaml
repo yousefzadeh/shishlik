@@ -1,0 +1,13 @@
+# Responsibility is statemnent models
+# To prevent confusion, this sources is hidden
+
+# version: 2
+
+# sources:
+#   - name: Responsibility_models
+#     schema: dbo
+#     tables:
+#       #Responsibility
+#       - name: Responsibility
+#       - name: ResponsibilityGroup
+#       - name: ResponsibilityPosition

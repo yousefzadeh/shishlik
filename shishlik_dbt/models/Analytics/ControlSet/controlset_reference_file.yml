@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: controlset_ref_models
+    schema: dbo
+    tables:
+      #ControlSet
+      - name: Policy
+      - name: PolicyDomain
+      - name: Controls
+      - name: Statement

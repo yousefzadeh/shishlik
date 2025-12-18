@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: miscellaneous_ref_models
+    schema: dbo
+    tables:
+      #Miscellaneous
+      - name: WorkflowStage
+      - name: Tags
+      - name: EntityTransferLogSource
+      - name: EntityTransferLogDestination
+      - name: EntityShareLog

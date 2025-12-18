@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: position_models
+    schema: dbo
+    tables:
+      #Position
+      - name: Position

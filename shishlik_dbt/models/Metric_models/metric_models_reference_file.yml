@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: metric_models
+    schema: dbo
+    tables:
+      #Metric
+      - name: Metric
+      - name: MetricColumnHeading
+      - name: MetricData
+      - name: MetricOwner
+      - name: MetricSeries
+      - name: MetricTag

@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: authority_ref_models
+    schema: dbo
+    tables:
+      #Authority
+      - name: Authority
+      - name: AuthorityProvision
+      - name: Jurisdiction
+      - name: TenantAuthority
+      - name: TenantAuthorityMapping
+      - name: TenantAuthorityProvisionMapping
+      - name: AuthorityPolicy
+      - name: ProvisionControl
+      - name: AuthorityProvisionCustomField
+      - name: IssueProvision

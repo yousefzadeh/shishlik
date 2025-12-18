@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: ServiceProviderClientIndustry_models
+    schema: dbo
+    tables:
+      #ServiceProviderClientIndustry
+      - name: ServiceProviderClientIndustry

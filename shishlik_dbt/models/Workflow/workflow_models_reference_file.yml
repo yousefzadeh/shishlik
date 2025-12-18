@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: workflow_models
+    schema: dbo
+    tables:
+      #Risk
+      - name: Workflow
+      - name: WorkflowStage
+      - name: WorkflowStageTransition

@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: Team_models
+    schema: dbo
+    tables:
+      #Team
+      - name: Team
+      - name: TeamRiskIdentification
+      - name: TeamRiskRating
+

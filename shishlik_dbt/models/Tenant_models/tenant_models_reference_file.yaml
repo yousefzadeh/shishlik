@@ -1,0 +1,28 @@
+version: 2
+
+sources:
+  - name: tenant_models
+    schema: dbo
+    tables:
+      #Tenant
+      - name: TenantVendor
+      - name: TenantAddOnFeatures
+      - name: TenantAuthorityMapping
+      - name: TenantAuthority
+      - name: TenantAuthorityProvisionMapping
+      - name: TenantEditions
+      - name: TenantEmailSentLogs
+      - name: TenantIntegration
+      - name: TenantMarketplaceCategory
+      - name: TenantRiskGroup
+      - name: TenantType
+      - name: TenantUserInvite
+      - name: TenantUserSubscription
+      - name: TenantVendorDocument
+      - name: TenantVendorImportStagingRecord
+      - name: TenantVendorUser
+      - name: TenantVendorOwner
+      - name: Rpt_TenantVendorGroup
+      - name: Rpt_VendorGroup
+      - name: VendorGroup
+      - name: TenantClientTemplate

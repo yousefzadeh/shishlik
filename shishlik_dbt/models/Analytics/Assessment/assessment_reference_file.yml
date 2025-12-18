@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: assessment_ref_models
+    schema: dbo
+    tables:
+      #Assessment
+      - name: Assessment
+      - name: AssessmentDomain
+      - name: AssessmentOwner
+      - name: AssessmentAccessMember
+      - name: AssessmentTag
+      - name: AssessmentRisk
+      - name: ProvisionQuestion
+      - name: Question
+      - name: QuestionGroup
+      - name: QuestionGroupResponse
+      - name: QuestionTags
+      - name: Answer
+      - name: AssessmentScopeRegisterItem

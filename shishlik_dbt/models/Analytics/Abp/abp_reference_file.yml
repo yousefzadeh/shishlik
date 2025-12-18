@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: abp_ref_models
+    schema: dbo
+    tables:
+      #Abp
+      - name: AbpTenants
+      - name: AbpUsers
+      - name: AbpRoles
+      - name: AbpOrganizationUnits
+      - name: AbpUserOrganizationUnits
+      - name: AdvisorInvite
+      - name: AbpEditions
+      - name: AbpUserRoles
+      - name: AbpPermissions
+      - name: AbpEntityChanges
+      - name: AbpEntityPropertyChanges
+      - name: Rpt_VendorGroup
+      - name: Rpt_TenantVendorGroup

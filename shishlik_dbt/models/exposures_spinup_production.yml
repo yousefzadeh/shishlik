@@ -1,0 +1,1725 @@
+# Generated on Mar 27 2024  2:56PM (UTC)
+version: 2
+
+exposures:
+    - name: Attestations
+      label: Attestations
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Attestations            
+        
+        **Description:** New View            
+        
+        **View ID:** 270882            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / ATTESTATIONS            
+        
+        **Created By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2022-02-21            
+        
+        **Modified By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2022-06-29    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAbpUser")
+          - ref("vwAttestationAttestors")
+          - ref("vwAttestationItems")
+          - ref("vwAttestationOwners")
+          - ref("vwAttestations")
+          - ref("vwAttestorApprovals")
+      owner:
+          name: Ban Pradhan parent
+          email: ban.pradhan@minerra.net
+
+    - name: Authority_Summary_View
+      label: Authority Summary View
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Authority Summary View            
+        
+        **Description:** Changes          
+        - Custom with Unassigned          
+        - Report filter popup search          
+        - List authorities that are downloaded          
+        - updated will not show empty custom fields          
+        - custom query for filters optimised             
+
+        **View ID:** 655882            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Herman Tan (parent) / herman.tan@minerra.net on 2022-03-28            
+        
+        **Modified By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2022-06-29    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwAuthority")
+          - ref("vwAuthorityProvision")
+          - ref("vwAuthorityProvisionCustomTable")
+          - ref("vwAuthorityTenantRelationship")
+      owner:
+          name: Herman Tan (parent)
+          email: herman.tan@minerra.net
+
+    - name: Assets_Free_Text
+      label: Assets Free Text
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Assets Free Text     
+
+        **Description:** Asset Free Text View       
+
+        **View ID:** 1327152            
+
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / ASSETS1            
+
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2022-05-05     
+
+        **Modified By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2022-06-29    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwAssetFreeTextData")
+          - ref("vwAssetRegisterReport")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Register_Custom_View
+      label: Register Custom View
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Register Custom View            
+        
+        **Description:**             
+        
+        **View ID:** 1327817            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / CUSTOMREGISTERS1            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2022-05-05            
+        
+        **Modified By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2022-06-29    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwRegisterAssetCustomData")
+          - ref("vwRegisterCustomReport")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Register_Custom_View_Free_Text
+      label: Register Custom View Free Text
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Register Custom View Free Text 
+
+        **Description:**             
+        
+        **View ID:** 1327907            
+
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / CUSTOMREGISTERS1            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2022-05-05            
+        
+        **Modified By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2022-06-29    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwRegisterAssetFreeTextData")
+          - ref("vwRegisterCustomReport")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Authority_to_Control_Set_Mapping
+      label: Authority to Control Set Mapping
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Authority to Control Set Mapping            
+        
+        **Description:** New View            
+        
+        **View ID:** 1407356            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2022-05-10            
+        
+        **Modified By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2022-06-29  
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("DimAuthority")
+          - ref("DimControlSet")
+          - ref("FactRelationAuthorityToControlSet")
+          - ref("vwAuthorityToControlSet_Table")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Vulnerability
+      label: Vulnerability
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Vulnerability            
+        
+        **Description:** No Description            
+        
+        **View ID:** 4435939            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / OTHER278            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2022-11-10            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-04-20   
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwSeverityByAsset")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Task_Detail_View
+      label: Task Detail View
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Task Detail View            
+        
+        **Description:** No Description            
+        
+        **View ID:** 4498886            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / OTHER278            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2022-12-08            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2022-12-08    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwTaskDetail")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Custom_Register_Self-Service_View
+      label: Custom Register (Self-Service View)
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Custom Register (Self-Service View)            
+        
+        **Description:** No Description            
+        
+        **View ID:** 4525218            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / CUSTOMREGISTERS1            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2022-12-19            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2022-12-19  
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwCustomRegisterAttributes")
+          - ref("vwCustomRegisterAttributesList")
+          - ref("vwRegisterAccessMemberList")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Risk_Matrix_Hub_View
+      label: Risk Matrix (Hub) View
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Risk Matrix (Hub) View            
+        
+        **Description:** This view is used to analyse all risk-related data in 6clicks            
+        
+        **View ID:** 4743074            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / RISKSHUB            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-02-15            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-02-15    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwRiskMatrixConfig")
+          - ref("vwTenantVendor")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Source_Control_Set_RBA_View
+      label: Source Control Set RBA View
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Source Control Set RBA View            
+        
+        **Description:** New View            
+        
+        **View ID:** 4786539            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-03-07            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-07-27  
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwSourceControlSetToRBA")
+      owner:
+          name: Herman Tan (parent)
+          email: herman.tan@minerra.net
+
+    - name: Risk_Matrix_Configuration
+      label: Risk Matrix Configuration
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Risk Matrix Configuration            
+        
+        **Description:** New View            
+        
+        **View ID:** 4872607            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / RISKS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-04-24            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-04-24 
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwRisk")
+          - ref("vwRiskAssessmentMatrix")
+          - ref("vwRiskMatrixConfig")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Risk_Details_Self-Service_View
+      label: Risk Details (Self-Service View)
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Risk Details (Self-Service View)            
+        
+        **Description:** Create Risk Reports for Self Service Reporting.            
+        
+        **View ID:** 4901569            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / RISKS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-05-06            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-06-07    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAssessmentDomain")
+          - ref("vwAssessmentRisk")
+          - ref("vwRisk")
+          - ref("vwRiskAssessment")
+          - ref("vwRiskAssessmentAttributeList")
+          - ref("vwRiskAttributeList")
+          - ref("vwRiskCustomDomain")
+          - ref("vwRiskCustomList")
+          - ref("vwRiskOwnerFilter")
+          - ref("vwRisksCustomData")
+          - ref("vwRiskStatusLog")
+          - ref("vwRiskTag")
+          - ref("vwRiskTreatmentPlanAttributeList")
+          - ref("vwRiskUserFilter")
+          - ref("vwTags")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Custom_Register
+      label: Custom Register
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Custom Register            
+        
+        **Description:** Register View            
+        
+        **View ID:** 4905203            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / CUSTOMREGISTERS1            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-05-09            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-05-09    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwRegisterCustom")
+          - ref("vwRegisterRecordCustomData")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Custom_Register_Free_Text
+      label: Custom Register Free Text
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Custom Register Free Text            
+         
+        **Description:** Register View            
+        
+        **View ID:** 4905268            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / CUSTOMREGISTERS1            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-05-09            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-05-09  
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwRegisterCustom")
+          - ref("vwRegisterRecordFreeTextData")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Authority_to_Assessment_Self-Service_View
+      label: Authority to Assessment (Self-Service View)
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Authority to Assessment (Self-Service View)            
+        
+        **Description:**             
+        
+        **View ID:** 4917351            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-05-18            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-05-18    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAnswerResponse_lambda")
+          - ref("vwAssessmentAuthority_source")
+          - ref("vwAssessmentDomain")
+          - ref("vwAuthority")
+          - ref("vwAuthorityProvision")
+          - ref("vwAuthorityProvisionCustomField")
+          - ref("vwAuthorityZero_source")
+          - ref("vwMappedAuthorityZero_source")
+          - ref("vwProvisionCustomFieldValue_lambda")
+          - ref("vwProvisionQuestion_new")
+          - ref("vwTenantAuthorityMapping")
+          - ref("vwTenantAuthorityProvisionMapping")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Authority_to_Control_Set_Custom_Field
+      label: Authority to Control Set Custom Field
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Authority to Control Set Custom Field            
+        
+        **Description:** No Description            
+        
+        **View ID:** 4929251            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-05-24            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-05-24    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAuthorityProvisionCustomTable")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Target_Control_Set_Authority_RBA_View
+      label: Target Control Set Authority RBA View
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Target Control Set Authority RBA View            
+        
+        **Description:** New View            
+        
+        **View ID:** 4929481            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-05-25            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-05-25   
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwTargetControlSetAuthorityToRBA")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Authority_to_Assessment_View
+      label: Authority to Assessment View
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Authority to Assessment View            
+        
+        **Description:** New View            
+        
+        **View ID:** 4968274            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-06-28            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-06-28 
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwDirectAuthority")
+          - ref("yfAuthorityToAssessmentSourceCustomFieldValue_V3")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Authority_to_Assessment_Target_View
+      label: Authority to Assessment Target View
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Authority to Assessment Target View            
+        
+        **Description:** New View            
+        
+        **View ID:** 4968341            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-06-28            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-06-28  
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwDirectAuthority")
+          - ref("vwTenantAuthorityMapping")
+          - ref("yfAuthorityToAssessmentTargetCustomFieldValue_V3")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: User_Access_Audit
+      label: User Access Audit
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** User Access Audit            
+        
+        **Description:** New View            
+        
+        **View ID:** 5012832            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / OTHER278            
+        
+        **Created By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-07-25            
+        
+        **Modified By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-07-25    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwHubSpoke")
+          - ref("vwReportUserAccess")
+      owner:
+          name: Herman Tan (parent)
+          email: herman.tan@minerra.net
+
+    - name: Spokes_Self-Service_View
+      label: Spokes (Self-Service View)
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Spokes (Self-Service View)            
+        
+        **Description:** New model #19237            
+        
+        **View ID:** 5032031            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / SPOKECHILDTEAMSHUB            
+        
+        **Created By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2023-08-08            
+        
+        **Modified By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2023-08-08    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAbpEditions")
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwHubSpokeToGroupsToParentGroup")
+          - ref("vwRpt_VendorGroup")
+          - ref("vwSpokeAdvisor")
+          - ref("vwSpokeLists")
+          - ref("vwSpokeThirdPartyCustomAttribute")
+          - ref("vwTags")
+          - ref("vwTenantClientTemplate")
+          - ref("vwTenantVendor")
+          - ref("vwVendorGroup")
+      owner:
+          name: Ban Pradhan parent
+          email: ban.pradhan@minerra.net
+
+    - name: Source_Authority_To_RBA_View
+      label: Source Authority To RBA View
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Source Authority To RBA View            
+        
+        **Description:** New View            
+        
+        **View ID:** 5053666            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2023-08-14            
+        
+        **Modified By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2023-08-14    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("Filter_AuthorityAssessmentCustomField")
+          - ref("vwSourceAuthorityToRBA")
+      owner:
+          name: Ban Pradhan parent
+          email: ban.pradhan@minerra.net
+
+    - name: Question_Based_Assessment_Answer_Details
+      label: Question Based Assessment Answer Details
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Question Based Assessment Answer Details            
+        
+        **Description:**             
+        
+        **View ID:** 5061290            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUDITSASSESSMENTS            
+        
+        **Created By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2023-08-15            
+        
+        **Modified By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2023-08-15    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("Filter_SpokeGroup")
+          - ref("Filter_TeamCustomFieldValue")
+          - ref("Filter_TemplateQBAssessmentActualResults")
+          - ref("Filter_TemplateQBAssessmentDomain")
+          - ref("Filter_TemplateQBAssessmentQuestionTag")
+          - ref("Filter_TemplateQBAssessmentStatus")
+          - ref("Filter_TemplateQBAssessmentVersion")
+          - ref("Filter_TemplateRespondingTeam")
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwAnswerResponseChooseMany")
+          - ref("vwAnswerResponseFilter")
+          - ref("vwAssessment")
+          - ref("vwAssessmentDomain")
+          - ref("vwAssessmentResponse")
+          - ref("vwQuestionAnswer")
+          - ref("vwQuestionGroupAnswers")
+          - ref("vwQuestionTagsJoined")
+          - ref("vwQuestionVendorUser")
+          - ref("vwRpt_TenantVendorGroup")
+          - ref("vwRpt_VendorGroup")
+          - ref("vwTenantVendor")
+          - ref("vwThirdPartyCustomTable")
+      owner:
+          name: Ban Pradhan parent
+          email: ban.pradhan@minerra.net
+
+    - name: Target_Authority_To_RBA_View
+      label: Target Authority To RBA View
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Target Authority To RBA View            
+        
+        **Description:** New View            
+        
+        **View ID:** 5064210            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2023-08-16            
+        
+        **Modified By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2023-08-16    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("Filter_AuthorityAssessmentCustomFieldToTargetAuthority")
+          - ref("vwTargetAuthorityToRBA")
+      owner:
+          name: Ban Pradhan parent
+          email: ban.pradhan@minerra.net
+
+    - name: Question_Based_Assessment_Answer_Details_Risk_Radar
+      label: Question Based Assessment Answer Details Risk Radar
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Question Based Assessment Answer Details Risk Radar            
+        
+        **Description:**             
+        
+        **View ID:** 5064434            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUDITSASSESSMENTS            
+        
+        **Created By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2023-08-16            
+        
+        **Modified By:** Ban Pradhan parent / ban.pradhan@minerra.net on 2023-08-16  
+
+        
+      depends_on:
+          - ref("Filter_TeamCustomFieldValue")
+          - ref("Filter_TemplateQBAssessmentActualResults")
+          - ref("Filter_TemplateQBAssessmentDomain")
+          - ref("Filter_TemplateQBAssessmentQuestionTag")
+          - ref("Filter_TemplateQBAssessmentVersion")
+          - ref("Filter_TemplateRespondingTeam")
+          - ref("vwAnswerResponseFilter")
+          - ref("vwAssessment")
+          - ref("vwAssessmentDomain")
+          - ref("vwQuestionAnswer")
+          - ref("vwQuestionGroupAnswers")
+          - ref("vwQuestionTagsJoined")
+          - ref("vwQuestionTargetResponse")
+          - ref("vwTenantVendor")
+          - ref("vwThirdPartyCustomTable")
+      owner:
+          name: Ban Pradhan parent
+          email: ban.pradhan@minerra.net
+
+    - name: Audit_Log
+      label: Audit Log
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Audit Log            
+        
+        **Description:** Audit Log Report            
+        
+        **View ID:** 5066302            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / ADMINISTRATION            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-08-18            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-08-18    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwAbpAuditLog")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Assets
+      label: Assets
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Assets            
+        
+        **Description:** Asset View            
+        
+        **View ID:** 5092972            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / ASSETS1            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-09-04            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-09-04    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwAssetCustomData")
+          - ref("vwAssetRegisterReport")
+          - ref("vwThirdPartyAttributes")
+          - ref("vwThirdPartyControl")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Requirements_Based_Assessment_Self-Service_View
+      label: Requirements Based Assessment (Self-Service View)
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Requirements Based Assessment (Self-Service View)            
+        
+        **Description:**             
+        
+        **View ID:** 5103946            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUDITSASSESSMENTS            
+        
+        **Created By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-06            
+        
+        **Modified By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-06    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwAssessmentAccessMemberFilter")
+          - ref("vwAssessmentAccessMemberList")
+          - ref("vwAssessmentAssignedByUser")
+          - ref("vwAssessmentDomainToResponseRequirement")
+          - ref("vwAssessmentOwnerFilter")
+          - ref("vwAssessmentOwnerList")
+          - ref("vwAssessmentRespondentList")
+          - ref("vwAssessmentTag")
+          - ref("vwAssessmentTagList")
+          - ref("vwAuthority")
+          - ref("vwEngagement")
+          - ref("vwFavouriteAssessmentFilter")
+          - ref("vwPolicy")
+          - ref("vwQBA_TemplateAssessment")
+          - ref("vwRBA_TemplateAssessment")
+          - ref("vwRBALinkedLists")
+          - ref("vwRBAResponseLinkedIssue")
+          - ref("vwRBAResponseLinkedRisk")
+          - ref("vwRBAResponseValue")
+          - ref("vwTags")
+          - ref("vwTenantVendor")
+      owner:
+          name: Herman Tan (parent)
+          email: herman.tan@minerra.net
+
+    - name: Requirements_Based_Assessments
+      label: Requirements Based Assessments
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Requirements Based Assessments            
+        
+        **Description:**             
+        
+        **View ID:** 5106233            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUDITSASSESSMENTS            
+        
+        **Created By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-07            
+        
+        **Modified By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-07   
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL**
+
+      depends_on:
+          - ref("Filter_TemplateRBAssessmentCustomFieldResponse")
+          - ref("Filter_TemplateRBAssessmentProvisionCustomFieldValue")
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwAssessment")
+          - ref("vwAssessmentCustomField")
+          - ref("vwAssessmentDomain")
+          - ref("vwAssessmentDomainControl")
+          - ref("vwAssessmentDomainControlIssue")
+          - ref("vwAssessmentDomainControlResponseData")
+          - ref("vwAssessmentDomainControlRisk")
+          - ref("vwAssessmentDomainProvision")
+          - ref("vwAssessmentDomainProvisionIssue")
+          - ref("vwAssessmentDomainProvisionResponseData")
+          - ref("vwAssessmentDomainProvisionRisk")
+          - ref("vwAssessmentResponse")
+          - ref("vwAuthority")
+          - ref("vwAuthorityCustomTable")
+          - ref("vwAuthorityProvision")
+          - ref("vwAuthorityProvisionCustomField")
+          - ref("vwControls")
+          - ref("vwCustomField")
+          - ref("vwCustomFieldAttribute")
+          - ref("vwIssueOwner")
+          - ref("vwIssues")
+          - ref("vwPolicy")
+          - ref("vwPolicyDomain")
+          - ref("vwRisk")
+          - ref("vwRiskOwner")
+          - ref("vwRiskTreatment")
+          - ref("vwTenantVendor")
+      owner:
+          name: Herman Tan (parent)
+          email: herman.tan@minerra.net
+
+    - name: Control_Performance_and_Effectiveness
+      label: Control Performance and Effectiveness
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Control Performance and Effectiveness            
+        
+        **Description:** Changes          
+                       - Responsibility owner assignee with names and type (org, user)            
+        
+        **View ID:** 5107195            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / POLICIESCONTROLSETS            
+        
+        **Created By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-07            
+        
+        **Modified By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-07    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("Filter_ControlSetResponsibilityTaskAssignee")
+          - ref("vwControls")
+          - ref("vwPolicy")
+          - ref("vwPolicyCustomFields")
+          - ref("vwPolicyDomain")
+          - ref("vwResponsibility")
+          - ref("vwResponsibilityAssigneeName")
+          - ref("vwResponsibilityControl")
+          - ref("vwResponsibilityFlag")
+          - ref("vwResponsibilityOwnerAssigneeList")
+          - ref("vwResponsibilityTaskDetail")
+      owner:
+          name: Herman Tan (parent)
+          email: herman.tan@minerra.net
+
+    - name: Third-Party_Self_Service_View
+      label: Third-Party Self Service View
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Third-Party Self Service View            
+        
+        **Description:** Custom Field Value Code fixed            
+        
+        **View ID:** 5118596            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / THIRDPARTIESVENDORS            
+        
+        **Created By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-18            
+        
+        **Modified By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-18   
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwAssessment")
+          - ref("vwAssetTenantVendors")
+          - ref("vwIssueAction")
+          - ref("vwIssueThirdParty")
+          - ref("vwRiskThirdParty")
+          - ref("vwTags")
+          - ref("vwTenantVendor")
+          - ref("vwTenantVendorOwnerList")
+          - ref("vwTenantVendorOwnerName")
+          - ref("vwThirdPartyAssessmentList")
+          - ref("vwThirdPartyAssetList")
+          - ref("vwThirdPartyCustomFieldValue")
+          - ref("vwThirdPartyIssueActionList")
+          - ref("vwThirdPartyIssueList")
+          - ref("vwThirdPartyRiskList")
+          - ref("vwThirdPartyTag")
+          - ref("vwThirdPartyTagsList")
+      owner:
+          name: Herman Tan (parent)
+          email: herman.tan@minerra.net
+
+    - name: Issues_and_Incidents_Self-Service_View
+      label: Issues and Incidents (Self-Service View)
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Issues and Incidents (Self-Service View)            
+        
+        **Description:** New design          
+                         WIP 20230918            
+        
+        **View ID:** 5120450            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / ISSUESINCIDENTS            
+        
+        **Created By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-18            
+        
+        **Modified By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-18   
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwControls")
+          - ref("vwDirectAuthorityProvision")
+          - ref("vwIssueAction")
+          - ref("vwIssueActionAttributeList")
+          - ref("vwIssueAssessment")
+          - ref("vwIssueAsset")
+          - ref("vwIssueControlStatement")
+          - ref("vwIssueCustomFieldValue")
+          - ref("vwIssueOwnerFilter")
+          - ref("vwIssueProvision")
+          - ref("vwIssueRegisterRecord")
+          - ref("vwIssueRisk")
+          - ref("vwIssues")
+          - ref("vwIssuesAttributeList")
+          - ref("vwIssueTag")
+          - ref("vwIssueThirdParty")
+          - ref("vwPolicyDomain")
+          - ref("vwRegisterRecord")
+          - ref("vwResponsibilityControl")
+          - ref("vwTags")
+          - ref("vwTenantVendor")
+          - ref("vwVulnerabilityIssue")
+      owner:
+          name: Herman Tan (parent)
+          email: herman.tan@minerra.net
+
+    - name: Compliance_Self-Service_View
+      label: Compliance (Self-Service View)
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Compliance (Self-Service View)            
+        
+        **Description:** Self-Service View for Compliance listing Authorities and Provisions            
+        
+        **View ID:** 5120677            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-18            
+        
+        **Modified By:** Herman Tan (parent) / herman.tan@minerra.net on 2023-09-19    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwAssessment")
+          - ref("vwAuthority")
+          - ref("vwAuthorityLists")
+          - ref("vwAuthorityProvision")
+          - ref("vwAuthorityProvisionCustomValue")
+          - ref("vwAuthorityProvisionTargetLists")
+          - ref("vwAuthorityProvisionToTargetAuthorityProvision")
+          - ref("vwAuthorityProvisionToTargetControlSetControl")
+          - ref("vwDirectAuthorityProvision")
+          - ref("vwIssueProvision")
+          - ref("vwJurisdiction")
+          - ref("vwRiskProvision")
+      owner:
+          name: Herman Tan (parent)
+          email: herman.tan@minerra.net
+
+    - name: Controls_and_Policies_Self-Service_View
+      label: Controls & Policies (Self-Service View)
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Controls & Policies (Self-Service View)            
+        
+        **Description:** Create Reports for Controls and Policies with  Associated Responsibilities.            
+        
+        **View ID:** 5137475            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / POLICIESCONTROLSETS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-10-17            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-10-17    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwControlAssessmentsList")
+          - ref("vwControlAuthoritiesList")
+          - ref("vwControlAuthorityProvisionsList")
+          - ref("vwControlIssuesList")
+          - ref("vwControlRisksList")
+          - ref("vwControls")
+          - ref("vwControlset")
+          - ref("vwControlSetAssessmentItem")
+          - ref("vwControlSetStakeholderRow")
+          - ref("vwControlSetStakeholders")
+          - ref("vwDirectAuthority")
+          - ref("vwDirectAuthorityProvision")
+          - ref("vwIssueControlStatement")
+          - ref("vwProvisionControl")
+          - ref("vwResponsibility")
+          - ref("vwResponsibilityControl")
+          - ref("vwResponsibilityOwner")
+          - ref("vwResponsibilityOwnerAssigneeList")
+          - ref("vwResponsibilityTask")
+          - ref("vwResponsibilityTaskComment")
+          - ref("vwResponsibilityTaskDetail")
+          - ref("vwRiskControl")
+          - ref("vwStatementMember")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Control_Set_To_Authority_Overview
+      label: Control Set To Authority Overview
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Control Set To Authority Overview            
+        
+        **Description:** New View            
+        
+        **View ID:** 5151976            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / POLICIESCONTROLSETS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-11-09            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-11-09    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("DimAuthority")
+          - ref("DimControlSet")
+          - ref("FactRelationAuthorityToControlSet")
+          - ref("vwControlSetToAuthority_Overview")
+          - ref("vwPolicy")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Control_Set_To_Authority_Mapping
+      label: Control Set To Authority Mapping
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Control Set To Authority Mapping            
+        
+        **Description:** New View            
+        
+        **View ID:** 5152044            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / POLICIESCONTROLSETS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-11-09            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-11-09    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("DimAuthority")
+          - ref("DimControlSet")
+          - ref("FactRelationAuthorityToControlSet")
+          - ref("vwControlSetToAuthority_Table")
+          - ref("vwPolicy")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Question_Based_Assessment_Question_Assigned_User_Details
+      label: Question Based Assessment Question Assigned User Details
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Question Based Assessment Question Assigned User Details            
+        
+        **Description:**             
+        
+        **View ID:** 5158080            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUDITSASSESSMENTS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-11-14            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-11-14    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwAnswer")
+          - ref("vwAssessment")
+          - ref("vwAssessmentDomain")
+          - ref("vwAssessmentTag")
+          - ref("vwQuestion")
+          - ref("vwQuestionAnswer")
+          - ref("vwQuestionAssignment")
+          - ref("vwQuestionGroupAnswers")
+          - ref("vwRpt_TenantVendorGroup")
+          - ref("vwRpt_VendorGroup")
+          - ref("vwTags")
+          - ref("vwTenantVendor")
+          - ref("vwThirdPartyCustomTable")
+          - ref("vwThirdPartyTag")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Question_Based_Assessment_Self-Service_View
+      label: Question Based Assessment (Self-Service View)
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Question Based Assessment (Self-Service View)            
+        
+        **Description:** Self-Service View for Question Based Assessments and Responses            
+        
+        **View ID:** 5160760            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUDITSASSESSMENTS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-11-14            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-11-14    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwAnswerAttachedDocumentList")
+          - ref("vwAssessmentAccessMemberFilter")
+          - ref("vwAssessmentAccessMemberList")
+          - ref("vwAssessmentAssignedByUser")
+          - ref("vwAssessmentDomainToResponse")
+          - ref("vwAssessmentOwnerFilter")
+          - ref("vwAssessmentOwnerList")
+          - ref("vwAssessmentRespondentList")
+          - ref("vwAssessmentResponseAssignedReviewerList")
+          - ref("vwAssessmentRisk")
+          - ref("vwAssessmentTag")
+          - ref("vwAssessmentTagList")
+          - ref("vwAuthority")
+          - ref("vwAuthorityProvision")
+          - ref("vwControlQuestion")
+          - ref("vwControls")
+          - ref("vwEngagement")
+          - ref("vwFavouriteAssessmentFilter")
+          - ref("vwIssueAction")
+          - ref("vwIssueAssessment")
+          - ref("vwIssues")
+          - ref("vwLatestAssessmentResponse")
+          - ref("vwPolicy")
+          - ref("vwProvisionQuestion")
+          - ref("vwQBA_QuestionAnswer")
+          - ref("vwQBA_TemplateAssessment")
+          - ref("vwQuestionGroup")
+          - ref("vwQuestionProvisionControlList")
+          - ref("vwQuestionTagList")
+          - ref("vwQuestionTags")
+          - ref("vwQuestionTargetResponse")
+          - ref("vwQuestionToIssueActionsList")
+          - ref("vwQuestionToIssuesList")
+          - ref("vwQuestionToRiskList")
+          - ref("vwRisk")
+          - ref("vwTags")
+          - ref("vwTenantVendor")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Issue_and_Issue_Action_Details
+      label: Issue and Issue Action Details
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Issue and Issue Action Details            
+        
+        **Description:**             
+        
+        **View ID:** 5180874            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / ISSUESINCIDENTS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-12-03            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-12-03    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwAssessment")
+          - ref("vwIssueAction")
+          - ref("vwIssueActionComment")
+          - ref("vwIssueAssessmentLink")
+          - ref("vwIssueCompletedDateLog")
+          - ref("vwIssueCustomData")
+          - ref("vwIssueOwner")
+          - ref("vwIssueOwnerFilter")
+          - ref("vwIssues")
+          - ref("vwIssuesAttributeList")
+          - ref("vwIssuesCustomData")
+          - ref("vwIssuesSCD")
+          - ref("vwIssueTag")
+          - ref("vwIssueThirdParty")
+          - ref("vwRpt_TenantVendorGroup")
+          - ref("vwRpt_VendorGroup")
+          - ref("vwTags")
+          - ref("vwTenantVendor")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Authority_To_Control_Set_Overview
+      label: Authority To Control Set Overview
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Authority To Control Set Overview            
+        
+        **Description:** New View            
+        
+        **View ID:** 5190728            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / AUTHORITIES            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-12-21            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2023-12-21    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("DimControl")
+          - ref("DimProvision")
+          - ref("FactRelationAuthorityToControlSet")
+          - ref("vwAuthorityToControlSet_Overview")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Risk_Details_Advanced_Self-Service_View
+      label: Risk Details (Advanced Self-Service View)
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Risk Details (Advanced Self-Service View)            
+        
+        **Description:** Create Risk Reports for Self Service Reporting for Advanced Users.            
+        
+        **View ID:** 5258615            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / RISKS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2024-03-04            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2024-03-04    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAssessmentDomain")
+          - ref("vwAssessmentRisk")
+          - ref("vwControls")
+          - ref("vwCustomFieldOption")
+          - ref("vwCustomFieldWithHubSpokeAccess")
+          - ref("vwDirectAuthority")
+          - ref("vwDirectAuthorityProvision")
+          - ref("vwIssueRisk")
+          - ref("vwPolicy")
+          - ref("vwPolicyDomain")
+          - ref("vwRegister")
+          - ref("vwRegisterRecord")
+          - ref("vwRisk")
+          - ref("vwRiskAssessmentCustomData")
+          - ref("vwRiskAssessmentList")
+          - ref("vwRiskAssessmentMatrixAttributes")
+          - ref("vwRiskAsset_Asset")
+          - ref("vwRiskAttributeList")
+          - ref("vwRiskControl")
+          - ref("vwRiskControlSetList")
+          - ref("vwRiskCustomAttributeData")
+          - ref("vwRiskCustomDomain")
+          - ref("vwRiskCustomList")
+          - ref("vwRiskIssuesList")
+          - ref("vwRiskLinkedAssessmentWorkflowDetail")
+          - ref("vwRiskOwner")
+          - ref("vwRiskOwnerFilter")
+          - ref("vwRiskProvision")
+          - ref("vwRiskRegisterList")
+          - ref("vwRiskRegisterRecord")
+          - ref("vwRiskReview")
+          - ref("vwRisksCustomData")
+          - ref("vwRiskTag")
+          - ref("vwRiskThirdParty")
+          - ref("vwRiskThirdPartyList")
+          - ref("vwRiskThirdPartyVendor")
+          - ref("vwRiskTreatment")
+          - ref("vwRiskTreatmentAuditLog")
+          - ref("vwRiskTreatmentPlan")
+          - ref("vwRiskTreatmentPlanAssociation")
+          - ref("vwRiskTreatmentPlanAttributeList")
+          - ref("vwRiskTreatmentPlanLinkedAuthorityControl")
+          - ref("vwRiskTreatmentPlanOriginalDueDate")
+          - ref("vwRiskTreatmentPlanOwnerFilter")
+          - ref("vwRiskUser")
+          - ref("vwRiskUserFilter")
+          - ref("vwRiskVulnerability")
+          - ref("vwRiskVulnerabilityList")
+          - ref("vwStatusLists")
+          - ref("vwTags")
+          - ref("vwTenantVendor")
+          - ref("vwThirdPartyAttributes")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Issue_and_Incident_Self-Service_View
+      label: Issue and Incident (Self-Service View)
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Issue and Incident (Self-Service View)            
+        
+        **Description:** View for Creating Self Service Reports for Issue and Issue Actions            
+        
+        **View ID:** 5259426            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / ISSUESINCIDENTS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2024-03-04            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2024-03-04 
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+      depends_on:
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwAssessment")
+          - ref("vwIssueAction")
+          - ref("vwIssueAssessment")
+          - ref("vwIssueCustomData")
+          - ref("vwIssueOwnerFilter")
+          - ref("vwIssues")
+          - ref("vwIssuesAttributeList")
+          - ref("vwIssuesCustomData")
+          - ref("vwIssueTag")
+          - ref("vwIssueUserFilter")
+          - ref("vwTags")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Risks_and_Risk_Assessment_Details
+      label: Risks and Risk Assessment Details
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Risks and Risk Assessment Details            
+        
+        **Description:** This view is used to analyse all risk-related data in 6clicks            
+        
+        **View ID:** 5265466            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / RISKS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2024-03-12            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2024-03-12    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("Filter_SpokeGroup")
+          - ref("vwAbpEntityChanges")
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwAssessment")
+          - ref("vwAssessmentDomain")
+          - ref("vwAssessmentRisk")
+          - ref("vwAsset")
+          - ref("vwAuthorityProvision")
+          - ref("vwControls")
+          - ref("vwCustomFieldOption")
+          - ref("vwRegisterCustom")
+          - ref("vwRegisterRecord")
+          - ref("vwRisk")
+          - ref("vwRiskAssessment")
+          - ref("vwRiskAssessmentAttributeList")
+          - ref("vwRiskAsset")
+          - ref("vwRiskAttributeList")
+          - ref("vwRiskCategory")
+          - ref("vwRiskControl")
+          - ref("vwRiskCustomAttributeData")
+          - ref("vwRiskCustomDomain")
+          - ref("vwRiskLinkedAssessment")
+          - ref("vwRiskOwner")
+          - ref("vwRiskOwnerFilter")
+          - ref("vwRiskProvision")
+          - ref("vwRiskRegisterRecord")
+          - ref("vwRiskReview")
+          - ref("vwRiskReviewRating")
+          - ref("vwRisksCustomData")
+          - ref("vwRiskTag")
+          - ref("vwRiskTreatment")
+          - ref("vwRiskTreatmentPlanAttributeList")
+          - ref("vwRiskTreatmentPlanOwnerFilter")
+          - ref("vwRpt_TenantVendorGroup")
+          - ref("vwRpt_VendorGroup")
+          - ref("vwStatusLists")
+          - ref("vwTags")
+          - ref("vwTenantVendor")
+          - ref("vwWorkflowStage")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Risk_Matrix_Hub_Detail
+      label: Risk Matrix (Hub) Detail
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Risk Matrix (Hub) Detail            
+        
+        **Description:** This view is used to analyse all risk-related data in 6clicks            
+        
+        **View ID:** 5270138            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / RISKSHUB            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2024-03-12            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2024-03-12    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("Filter_SpokeGroup")
+          - ref("vwAbpTenants")
+          - ref("vwAssessment")
+          - ref("vwAssessmentDomain")
+          - ref("vwAssessmentRisk")
+          - ref("vwCustomFieldOption")
+          - ref("vwRisk")
+          - ref("vwRiskAssessment")
+          - ref("vwRiskAssessmentAttributeList")
+          - ref("vwRiskAssessmentMatrix")
+          - ref("vwRiskCustomAttributeData")
+          - ref("vwRiskCustomDomain")
+          - ref("vwRiskLinkedAssessment")
+          - ref("vwRiskMatrixConfig")
+          - ref("vwRiskOwner")
+          - ref("vwRiskOwnerFilter")
+          - ref("vwRiskReview")
+          - ref("vwRiskReviewRating")
+          - ref("vwRisksCustomData")
+          - ref("vwRiskTag")
+          - ref("vwRiskTreatment")
+          - ref("vwRiskTreatmentPlanAttributeList")
+          - ref("vwRpt_TenantVendorGroup")
+          - ref("vwRpt_VendorGroup")
+          - ref("vwStatusLists")
+          - ref("vwTags")
+          - ref("vwTenantVendor")
+          - ref("vwWorkflowStage")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com
+
+    - name: Risks_Matrix_Details
+      label: Risks Matrix Details
+      type: dashboard
+      maturity: medium
+      url: https://yellowfin-dev-ihsopk.6clicks.io/logoff.i4
+      description: |          
+        ### **View Name:** Risks Matrix Details            
+        
+        **Description:** This view is used to analyse all risk-related data in 6clicks            
+        
+        **View ID:** 5271990            
+        
+        **Folder:** 6CLICKSREPORTSDASHBOARDS / RISKS            
+        
+        **Created By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2024-03-12            
+        
+        **Modified By:** Sai Teja Rontala parent / rontala.teja@6clicks.com on 2024-03-12    
+
+        ### **Virtual Tables Embedded SQL** 
+        ### **Custom Filter Embedded SQL** 
+
+      depends_on:
+          - ref("vwAbpEntityChanges")
+          - ref("vwAbpTenants")
+          - ref("vwAbpUser")
+          - ref("vwAssessment")
+          - ref("vwAssessmentDomain")
+          - ref("vwAssessmentRisk")
+          - ref("vwAsset")
+          - ref("vwAuthorityProvision")
+          - ref("vwControls")
+          - ref("vwRegisterCustom")
+          - ref("vwRegisterRecord")
+          - ref("vwRisk")
+          - ref("vwRiskAssessment")
+          - ref("vwRiskAssessmentAttributeList")
+          - ref("vwRiskAssessmentMatrix")
+          - ref("vwRiskAsset")
+          - ref("vwRiskAttributeList")
+          - ref("vwRiskCategory")
+          - ref("vwRiskControl")
+          - ref("vwRiskCustomDomain")
+          - ref("vwRiskLinkedAssessment")
+          - ref("vwRiskOwner")
+          - ref("vwRiskOwnerFilter")
+          - ref("vwRiskProvision")
+          - ref("vwRiskRegisterRecord")
+          - ref("vwRiskReview")
+          - ref("vwRisksCustomData")
+          - ref("vwRiskTag")
+          - ref("vwRiskTreatment")
+          - ref("vwRiskTreatmentPlanAttributeList")
+          - ref("vwRiskTreatmentPlanOwnerFilter")
+          - ref("vwStatusLists")
+          - ref("vwTags")
+          - ref("vwTenantVendor")
+          - ref("vwWorkflowStage")
+      owner:
+          name: Sai Teja Rontala parent
+          email: rontala.teja@6clicks.com

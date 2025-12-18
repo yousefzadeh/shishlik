@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: reviewrisks_models
+    schema: dbo
+    tables:
+      #ReviewRisks
+      - name: ReviewRisksNew

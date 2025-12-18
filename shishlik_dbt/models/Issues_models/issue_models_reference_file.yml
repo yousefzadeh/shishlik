@@ -1,0 +1,125 @@
+version: 2
+
+sources:
+  - name: issue_models
+    schema: dbo
+    tables:
+      #Issues
+      - name: EntityRegister
+      - name: Issues
+      - name: IssueAction
+      - name: IssueActionComment
+      - name: IssueActionDocument
+      - name: IssueAssessment
+      - name: IssueAsset
+      - name: IssueCustomAttributeData
+      - name: IssueDocument
+      - name: IssueFreeTextControlData
+      - name: IssueProvision
+      - name: IssueRegisterRecord
+      - name: IssueRisk
+      - name: IssueTag
+      - name: IssueOwner
+      - name: IssueThirdParty
+      - name: IssueControlStatement
+      - name: IssueUser
+      - name: IssueSubmissionForm
+      - name: IssueSubmissionFormOwner
+      #Third Party
+      - name: ThirdPartyControl
+        description: |
+          Contains the Custom Field Names for Custom Fields per Login Tenant.  
+          A Tenant is associated to Vendors (Responding Teams / Spokes) in the TenantVendor table.
+        columns:
+          - name: TenantId
+            description: Login TenantId that created this Custom Field
+          - name: Type
+            description: |
+              Type of Custom Field
+              - 1 = Dropdown
+              - 2 = Matrix (Dynamic)
+              - 3 = Freetext
+              - 4 = Multiselect Dropdown
+              - 5 = Date
+              - 6 = Rich Text
+              - 7 = Number
+              - 8 = User
+          - name: EntityType
+            description: |
+              Entity Type of Custom Field
+              - 0 = Third Party
+              - 1 = Asset
+              - 2 = Risk
+              - 3 = RiskTreatment
+              - 4 = RiskAssessment
+              - 5 = Register
+              - 6 = Issue
+              - 7 = Policy (Control Set)
+              - 8 = Vulnerability
+          - name: Label
+            description: Name of the Custom Field
+          - name: LabelVarchar
+            description: |
+              When a column is used in YF with varchar(max) datatype, YF breaks.
+              This is a computed column expression:
+              (CONVERT([varchar](100),[Label]))
+            # tests: 
+            #   - expect_column_to_exist
+          - name: Enabled
+            description: |
+              If the Custom Field is enabled
+              - 0 = Disabled
+              - 1 = Enabled
+          - name: Description
+            description: Description of the Custom Field
+          - name: Order
+            description: Order of the Custom Field in the UI
+          - name: ParentThirdPartyControlId
+            description: |
+              If the Custom Field is a child of another Custom Field, this is the Parent Custom Field Id
+          - name: Formula
+      - name: ThirdPartyAttributes
+        description: |
+          Contains the Custom Field Value for the following data types:
+          - Dropdown
+          - Multiselect Dropdown
+          - Matrix
+          - Dynamic
+        columns:
+          - name: Label
+            description: Value of the Custom Field 
+          - name: LabelVarchar
+            description: |
+              When a column is used in YF with varchar(max) datatype, YF breaks.
+              This is a computed column expression:
+              (CONVERT([varchar](100),[Label]))
+            # tests: 
+            #   - expect_column_to_exist
+      - name: ThirdPartyData
+        description: Relation of Custom Field Value to the TenantVendor (Responding Team / Vendor / Spoke)
+        columns:
+          - name: TenantVendorId
+            description: TenantVendorId that the Custom Field Value is associated with 
+          - name: ThirdPartyAttributesId
+            description: Custom Field Value that is associated with the TenantVendor
+      - name: ThirdPartyDyanmicFieldDataFileLog
+      - name: ThirdPartyDynamicFieldConfiguration
+      - name: ThirdPartyDynamicFieldData
+      - name: ThirdPartyFreeTextControlData
+        description: |
+          Contains the Custom Field Value for the following data types:
+          - Freetext
+          - Rich Text
+          - Number
+          - Date
+        columns:
+          - name: TextData
+          - name: NumberValue
+          - name: CustomDateValue
+      - name: ThirdPartyTag
+      - name: ThirdPartyOnboardingForm
+      - name: ThirdPartyOnboardingFormOwner
+      - name: ThirdPartyOnboardingFormAssessmentRespondent
+      - name: ThirdPartyOnboardingFormNotification
+      #Asset
+      - name: Asset

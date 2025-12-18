@@ -1,0 +1,325 @@
+6clicks_dev:
+  target: test
+
+  outputs:
+    test:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-dev-spinups.database.windows.net
+      database: sqldb-6clicks-dev-spinup-ihsopk
+      port: 1433
+      schema: test_dbt_cicd
+      user: appuser
+      password: "{{ env_var('DB_PASSWORD') }}"
+
+    autest:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-au.database.windows.net
+      database: sqldb-6clicks-prod-au
+      port: 1433
+      schema: test_dbt_cicd
+      user: appreportingtester
+      password: "{{ env_var('DB_PASSWORD') }}"
+
+    spinup:
+      type: sqlserver
+      driver: 'ODBC Driver 18 for SQL Server'
+      server: sql-6clicks-dev-spinups.database.windows.net
+      database: sqldb-6clicks-dev-spinup-ihsopk
+      port: 1433
+      schema: reporting
+      user: appuser
+      password: "{{ env_var('DB_PASSWORD') }}"
+
+    yfspinup:
+      type: sqlserver
+      driver: 'ODBC Driver 18 for SQL Server'
+      server: sql-6clicks-dev-spinups.database.windows.net
+      database: sqldb-6clicks-dev-spinup-yfspinup
+      port: 1433
+      schema: reporting
+      user: appuser
+      password: "{{ env_var('DB_PASSWORD') }}"
+
+    spinupmsi:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-dev-spinups.database.windows.net
+      database: sqldb-6clicks-dev-spinup-ihsopk
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    spinup2:
+      type: sqlserver
+      driver: 'ODBC Driver 18 for SQL Server'
+      server: sql-6clicks-dev-spinups.database.windows.net
+      database: sqldb-6clicks-dev-spinup-youxgh
+      port: 1433
+      schema: reporting
+      user: appuser
+      password: "{{ env_var('DB_PASSWORD') }}"
+
+    spinup2msi:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-dev-spinups.database.windows.net
+      database: sqldb-6clicks-dev-spinup-youxgh
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    staging:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sqlserv-staging.database.windows.net
+      database: sqldb-6clicks-staging
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    stagingacme:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sqlserv-staging.database.windows.net
+      database: sqldb-staging-app-acme
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    auprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-au.database.windows.net
+      database: sqldb-6clicks-prod-au
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    usprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-us.database.windows.net
+      database: sqldb-6clicks-prod-us
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    ukprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-uk.database.windows.net
+      database: sqldb-6clicks-prod-uk
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    augovprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-au-gov.database.windows.net
+      database: sqldb-6clicks-prod-au-gov
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    usgovprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sqlserv-prod-us-gov.database.windows.net
+      database: sqldb-6clicks-prod-us-gov
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    uaeprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-uae.database.windows.net
+      database: sqldb-6clicks-prod-uae
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    admnprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-uae.database.windows.net
+      database: sqldb-6clicks-prod-uae-admn
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    deprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-de.database.windows.net
+      database: sqldb-6clicks-prod-de
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    jpprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-jp.database.windows.net
+      database: sqldb-6clicks-prod-jp
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    sgprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-sg.database.windows.net
+      database: sqldb-6clicks-prod-sg
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    caprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-ca.database.windows.net
+      database: sqldb-6clicks-prod-ca
+      port: 1433
+      schema: reporting
+      authentication: MSI
+
+    analytics_spinup:
+      type: sqlserver
+      driver: 'ODBC Driver 18 for SQL Server'
+      server: sql-6clicks-dev-spinups.database.windows.net
+      database: sqldb-6clicks-dev-spinup-ihsopk
+      port: 1433
+      schema: analytics
+      user: appuser
+      password: "{{ env_var('DB_PASSWORD') }}"
+
+    analytics_yfspinup:
+      type: sqlserver
+      driver: 'ODBC Driver 18 for SQL Server'
+      server: sql-6clicks-dev-spinups.database.windows.net
+      database: sqldb-6clicks-dev-spinup-yfspinup
+      port: 1433
+      schema: analytics
+      user: appuser
+      password: "{{ env_var('DB_PASSWORD') }}"
+
+    analytics_staging:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sqlserv-staging.database.windows.net
+      database: sqldb-6clicks-staging
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_staging_acme:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sqlserv-staging.database.windows.net
+      database: sqldb-staging-app-acme
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_auprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-au.database.windows.net
+      database: sqldb-6clicks-prod-au
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_usprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-us.database.windows.net
+      database: sqldb-6clicks-prod-us
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_ukprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-uk.database.windows.net
+      database: sqldb-6clicks-prod-uk
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_augovprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-au-gov.database.windows.net
+      database: sqldb-6clicks-prod-au-gov
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_usgovprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sqlserv-prod-us-gov.database.windows.net
+      database: sqldb-6clicks-prod-us-gov
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_uaeprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-uae.database.windows.net
+      database: sqldb-6clicks-prod-uae
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_admnprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-uae.database.windows.net
+      database: sqldb-6clicks-prod-uae-admn
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_deprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-de.database.windows.net
+      database: sqldb-6clicks-prod-de
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_jpprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-jp.database.windows.net
+      database: sqldb-6clicks-prod-jp
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_sgprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-sg.database.windows.net
+      database: sqldb-6clicks-prod-sg
+      port: 1433
+      schema: analytics
+      authentication: MSI
+
+    analytics_caprod:
+      type: sqlserver
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: sql-6clicks-prod-ca.database.windows.net
+      database: sqldb-6clicks-prod-ca
+      port: 1433
+      schema: analytics
+      authentication: MSI

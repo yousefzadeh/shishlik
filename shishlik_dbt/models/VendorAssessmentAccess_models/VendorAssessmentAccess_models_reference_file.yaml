@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: VendorAssessmentAccess_models
+    schema: dbo
+    tables:
+      #VendorAssessmentAccess
+      - name: VendorAssessmentAccess

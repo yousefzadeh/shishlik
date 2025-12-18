@@ -1,0 +1,78 @@
+# version: 2
+
+# models:
+
+#   - name: vwQuestionVendorUser
+#     columns:
+#       - name: QuestionVendorUser_PK
+#         tests:
+#           - unique
+#           - not_null
+#       - name: QuestionVendorUser_ID
+#         tests:
+#           - unique
+#           - not_null
+#       - name: QuestionVendorUser_OrganizationUnitId
+#         tests:
+#           - not_null:
+#               severity: warn
+#       - name: QuestionVendorUser_TenantId
+#         tests:
+#           - not_null
+#       - name: QuestionVendorUser_UserId
+#         tests:
+#           - not_null
+#       - name: QuestionVendorUser_QuestionId
+#         tests:
+#           - not_null
+
+#   - name: vwQuestion
+#     columns:
+#       - name: Question_ID
+#         tests:
+#           - unique
+#           - not_null
+#       - name: Question_PK
+#         tests:
+#           - unique
+#           - not_null
+#       - name: Question_AssessmentDomainId
+#         tests:
+#           - not_null
+#       - name: Question_IdRef
+#        tests:
+#          - not_null
+#       - name: Question_Code
+#         tests:
+#           - not_null
+
+#   - name: vwAssessmentDomain
+#     columns:
+#       - name: AssessmentDomain_PK
+#         tests:
+#           - unique:
+#               severity: warn
+#           - not_null:
+#               severity: warn
+
+#   - name: vwAssessmentResponse
+#     columns:
+#       - name: AssessmentResponse_PK
+#         tests:
+#           - unique
+#           - not_null
+
+#   - name: vwAnswerDocument
+#     columns:
+#       - name: AnswerDocument_PK
+#         tests:
+#           - unique
+#           - not_null
+
+#   - name: vwAnswer
+#     columns:
+#       - name: Answer_PK
+#         tests:
+#           - unique:
+#               severity: warn
+#           - not_null

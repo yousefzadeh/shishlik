@@ -1,0 +1,33 @@
+version: 2
+
+sources:
+  - name: risk_ref_models
+    schema: dbo
+    tables:
+      #Risk
+      - name: Risk
+      - name: RiskUser
+      - name: RiskAssessment
+      - name: RiskAssessmentCustomAttributeData
+      - name: RiskAssessmentThirdPartyControlFreeText
+      - name: RiskAsset
+      - name: RiskProvision
+      - name: RiskComment
+      - name: RiskControl
+      - name: RiskCustomAttributeData
+      - name: RiskThirdPartyControlCustomText
+      - name: RiskOwner
+      - name: RiskPolicy
+      - name: RiskRelationships
+      - name: RiskReviewNew
+      - name: ReviewRisksNew
+      - name: StatusLists
+      - name: RiskTag
+      - name: RiskThirdParty
+      - name: RiskTreatmentPlanAssociation
+      - name: RiskTreatmentPlan
+      - name: RiskTreatmentPlanOwner
+      - name: RiskTreatmentPlanProvision
+      - name: RiskTreatmentPlanComment
+      - name: RiskTreatmentPlanControl
+      - name: RiskTreatmentPlanPolicy

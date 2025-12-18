@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: third-party_ref_models
+    schema: dbo
+    tables:
+      #Third-Party
+      - name: TenantVendor
+      - name: ThirdPartyAttributes
+      - name: ThirdPartyControl
+      - name: ThirdPartyDynamicFieldData
+      - name: ThirdPartyDynamicFieldConfiguration

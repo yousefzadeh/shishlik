@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: edition_models
+    schema: dbo
+    tables:
+      #Edition
+      - name: EditionFeatureContent
+      - name: EditionTemplates

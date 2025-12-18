@@ -1,0 +1,41 @@
+version: 2
+
+sources:
+  - name: hailey_union_models
+    description: |
+      This file contains the DB Tables used by the Hailey assist union view.
+    schema: dbo
+    tables:
+      - name: Controls
+      - name: ControlOwner
+      - name: AbpOrganizationUnits
+      - name: AbpTenants
+      - name: Policy
+      - name: PolicyDomain
+      - name: Risk
+      - name: RiskThirdParty
+      - name: StatusLists
+      - name: WorkflowStage
+      - name: Assessment
+      - name: EntityRegister
+      - name: Issues
+      - name: IssueTag
+      - name: IssueThirdParty
+      - name: Tags
+      - name: IssueCustomAttributeData
+      - name: ThirdPartyAttributes
+      - name: ThirdPartyControl
+      - name: ThirdPartyData
+      - name: ThirdPartyTag
+      - name: TenantVendor
+      - name: AssetTag
+      - name: Asset
+      - name: AssetAccessMember
+      - name: AbpUsers
+      - name: Register
+      - name: RegisterRecord
+      - name: RegisterRecordTag
+      - name: TenantAuthority
+      - name: Authority
+      - name: Project
+      - name: ProjectTag

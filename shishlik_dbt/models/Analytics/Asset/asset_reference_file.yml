@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: asset_ref_models
+    schema: dbo
+    tables:
+      #Asset
+      - name: Issues
+      - name: IssueOwner
+      - name: IssueRisk
+      - name: EntityRegister
+      - name: IssueUser
+      - name: IssueTag
+      - name: AssetHostIPOrDomain
+      - name: IssueCustomAttributeData
+      - name: IssueFreeTextControlData
+      - name: IssueDocument
+      - name: IssueActionDocument
+      - name: IssueAction
+      - name: IssueActionComment
+      - name: IssueRegisterRecord
+      - name: IssueControlStatement
+      - name: IssueThirdParty
+      - name: IssueProvision

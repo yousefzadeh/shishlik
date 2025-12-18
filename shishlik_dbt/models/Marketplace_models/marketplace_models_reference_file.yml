@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: marketplace_models
+    schema: dbo
+    tables:
+      #Marketplace
+      - name: MarketplaceCategory
+      - name: MarketplaceItem
+      - name: MarketplaceItemDocument
+      - name: MarketplaceItemJurisdiction
+      - name: MarketplaceItemTags
+      - name: MarketplaceItemTenant
+      - name: MarketplaceTags

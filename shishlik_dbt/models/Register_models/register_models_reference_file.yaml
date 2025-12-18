@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: register_models
+    schema: dbo
+    tables:
+      #Register
+      - name: Register
+      - name: RegisterImportStagingRecord
+      - name: RegisterRecord
+      - name: RegisterRecordCustomAttributesData
+      - name: RegisterRecordDocument
+      - name: RegisterRecordOwner
+      - name: RegisterRecordTag
+      - name: RegisterRecordThirdPartyControlFreeText
+      - name: RegisterAccessMember

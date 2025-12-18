@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: tenure_models
+    schema: dbo
+    tables:
+      #Tenure
+      - name: Tenure

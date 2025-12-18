@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: __EFMigrationsHistory_models
+    schema: dbo
+    tables:
+      #__EFMigrationsHistory
+      - name: __EFMigrationsHistory

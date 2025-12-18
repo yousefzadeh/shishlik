@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: industry_models
+    schema: dbo
+    tables:
+      #Industry
+      - name: Industry

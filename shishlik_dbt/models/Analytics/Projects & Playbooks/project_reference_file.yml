@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: project_ref_models
+    schema: dbo
+    tables:
+      #Risk
+      - name: Project
+      - name: ProjectTag
+      - name: ProjectTask
+      - name: ProjectTaskAssignee
+      - name: ProjectTaskComment
+      - name: ProjectTaskDocument
+      - name: ProjectTaskAssessment
+      - name: ProjectTaskProvision
+      - name: ProjectTaskRegisterItem
+      - name: ProjectTaskControlStatement
+      - name: ProjectTaskRisk
+      - name: ProjectTaskThirdParty

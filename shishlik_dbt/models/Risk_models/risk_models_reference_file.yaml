@@ -1,0 +1,52 @@
+version: 2
+
+sources:
+  - name: risk_models
+    schema: dbo
+    tables:
+      #Risk
+      - name: Risk
+      - name: RiskActivity
+      - name: RiskAssessment
+      - name: RiskAssessmentCustomAttributeData
+      - name: RiskAssessmentStagingRecord
+      - name: RiskAssessmentTag
+      - name: RiskAssessmentThirdPartyControlFreeText
+      - name: RiskAsset
+      - name: RiskCategory
+      - name: RiskComment
+      - name: RiskControl
+      - name: RiskCustomAttributeData
+      - name: RiskDocument
+      - name: RiskGroup
+      - name: RiskGroupCategory
+      - name: RiskImportStagingRecord
+      - name: RiskMetric
+      - name: RiskOwner
+      - name: RiskPolicy
+      - name: RiskProvision
+      - name: RiskRegisterRecord
+      - name: RiskReviewNew
+      - name: RiskReviewClientInvite
+      - name: RiskReviewOwnerEmailsLog
+      - name: RiskReviewTeam
+      - name: RiskReviewUserInvite
+      - name: RiskReviewOwnerNew
+      - name: RiskTag
+      - name: RiskThirdParty
+      - name: RiskThirdPartyControlCustomText
+      - name: RiskTreatment
+      - name: RiskTreatmentCustomAttributeData
+      - name: RiskTreatmentPlan
+      - name: RiskTreatmentPlanAssociation
+      - name: RiskTreatmentPlanControl
+      - name: RiskTreatmentPlanOwner
+      - name: RiskTreatmentPlanPolicy
+      - name: RiskTreatmentPlanProvision
+      - name: RiskUser
+      - name: RiskUserInvite
+      - name: RiskTreatmentPlanComment
+      - name: RiskRelationships
+      - name: EntityShareLog
+      # Asset
+      - name: Asset

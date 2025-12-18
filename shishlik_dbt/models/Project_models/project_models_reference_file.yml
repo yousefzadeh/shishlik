@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: project_models
+    schema: dbo
+    tables:
+      #Project
+      - name: Project
+      - name: ProjectTag
+      - name: ProjectTask
+      - name: ProjectTaskAssignee
+      - name: ProjectTaskComment
+      - name: ProjectTaskDocument

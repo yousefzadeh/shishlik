@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: externalCRM_models
+    schema: dbo
+    tables:
+      #ExternalCRM
+      - name: ExternalCRMRecordMapping
+      - name: ExternalCRMSyncTracker

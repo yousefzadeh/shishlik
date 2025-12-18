@@ -1,0 +1,205 @@
+version: 2
+
+sources:
+  - name: assessment_models
+    description: |
+      This file contains the DB Tables used by the assessment module of the App.
+    schema: dbo
+    tables:
+      #question
+      - name: Question
+        columns:
+          - name: IsMultiSelectType
+            description: |
+              Computed column to get the IsMultiSelectType of the Question with the following expression:              
+              (case
+                  when [Type] in (3, 7, 8)
+                  then 1
+                  else 0
+              end) 
+            # tests: 
+            #   - expect_column_to_exist
+      - name: QuestionComment
+      - name: QuestionDocument
+      - name: QuestionTags
+      - name: QuestionVendorUser
+      - name: QuestionGroup
+      - name: QuestionGroupResponse
+      - name: QuestionReferenceDocuments
+      - name: QuestionUser
+      #answer
+      - name: Answer
+      - name: AnswerDocument
+      #assessment
+      - name: AssessmentResponse
+      - name: AssessmentRespondentPermission
+      - name: AssessmentDomain
+      - name: AssessmentOwner
+      - name: AssessmentCustomField
+      - name: Assessment
+        columns:
+          - name: NameVarchar
+            description: |
+              When a column is used in YF with varchar(max) datatype, YF breaks.
+              This is a computed column expression:
+              (case when [IsArchived]=(1) then 'No Template' else CONVERT([varchar](200),[Name],(0)) end)
+            # tests:
+            #   - expect_column_to_exist
+      - name: AssessmentTag
+      - name: AssessmentDomainProvision
+      - name: AssessmentDomainProvisionNote
+      - name: AssessmentRisk
+      - name: AssessmentDomainControlRisk
+      - name: AssessmentDomainProvisionRisk
+      - name: AssessmentAccess
+      - name: AssessmentAccessMember
+      - name: AssessmentDomainControl
+      - name: AssessmentDomainControlIssue
+      - name: AssessmentDomainControlNote
+      - name: AssessmentDomainControlReferenceDocument
+      - name: AssessmentDomainControlResponseData
+      - name: AssessmentDomainControlResponseDocument
+      - name: AssessmentDomainProvisionIssue
+      - name: AssessmentDomainProvisionReferenceDocument
+      - name: AssessmentDomainProvisionResponseData
+      - name: AssessmentDomainProvisionResponseDocument
+      - name: AssessmentPolicyDomainMapping
+      - name: AssessmentResponseImportStaging
+      - name: AssessmentScopeRegisterItem
+      - name: AssessmentScopeRisk
+      #Abp
+      - name: AbpUsers
+      - name: AbpTenants
+      - name: AbpFeatures
+      - name: AbpEditions
+      - name: AbpAuditLogs
+      - name: AbpBackgroundJobs
+      - name: AbpEntityChangeSets
+      - name: AbpEntityChanges
+      - name: AbpEntityPropertyChanges
+        columns:
+          - name: PropertyNameVarChar
+            description: |
+              When a column is used in YF with varchar(max) datatype, YF breaks.
+              This is a computed column expression:
+              (CONVERT([varchar](200),[PropertyName]))
+            # tests: 
+            #   - expect_column_to_exist
+      - name: AbpLanguageTexts
+      - name: AbpLanguages
+      - name: AbpNotificationSubscriptions
+      - name: AbpNotifications
+      - name: AbpOrganizationUnits
+      - name: AbpPermissions
+      - name: AbpPersistedGrants
+      - name: AbpRoleClaims
+      - name: AbpRoles
+      - name: AbpSettings
+      - name: AbpTenantNotifications
+      - name: AbpUserAccounts
+      - name: AbpUserClaims
+      - name: AbpUserLoginAttempts
+      - name: AbpUserLogins
+      - name: AbpUserNotifications
+      - name: AbpUserOrganizationUnits
+      - name: AbpUserRoles
+      - name: AbpUserTokens
+      #CustomField
+      - name: CustomField
+      - name: CustomFieldAttribute
+      #Authority
+      - name: Authority
+        columns:
+          - name: NameVarchar
+            description: |
+              When a column is used in YF with varchar(max) datatype, YF breaks.
+              This is a computed column expression:
+              (CONVERT([nvarchar](200),[Name]))
+            # tests: 
+            #   - expect_column_to_exist
+      - name: AuthorityPolicy
+      - name: AuthorityProvision
+      - name: AuthorityProvisionCustomField
+      - name: AuthorityProvisionRisk
+      - name: AuthorityProvisionSimilarity
+      - name: AuthorityProvisionSimilarityFeedback
+      - name: AuthoritySimilarity
+      - name: AuthoritySimilarityComparisonRequest
+      #Policy
+      - name: Policy
+      - name: PolicyAccess
+      - name: PolicyDocument
+      - name: PolicyDomain
+      - name: PolicyStakeHolders
+      - name: PolicyCustomAttributeData
+      #Controls
+      - name: Controls
+      - name: ControlQuestion
+      - name: ControlProvisionSimilarity
+      - name: ControlProvisionSimilarityFeedback
+      - name: ControlCustomFieldData
+      - name: ControlOwner
+      #Tags
+      - name: Tags
+      #Provision
+      - name: ProvisionQuestion
+      - name: ProvisionControl
+      #Asset
+      - name: AssetThirdPartyControlFreeText
+      - name: AssetTenantVendors
+      - name: AssetTag
+      - name: AssetOwner
+      - name: AssetDocument
+      - name: AssetCustomAttributeData
+      - name: Asset
+      - name: AssetHostIPOrDomain
+      - name: AssetAccessMember
+      #Attestation
+      - name: AttestationAttestors
+      - name: AttestationItems
+      - name: AttestationOwners
+      - name: AttestationAccessMember
+      - name: Attestations
+      - name: AttestorApprovals
+      #Compliance
+      - name: CompliancePortalProfile
+      - name: CompliancePortalProfileOwner
+      - name: CompliancePortalProfileAccessMember
+      - name: CompliancePortalProfileAssessment
+      - name: CompliancePortalProfilePolicy
+      - name: CompliancePortalProfileDocument
+      - name: CompliancePortalSharedProfile
+      #App
+      - name: AppBinaryObjects
+      - name: AppChatMessages
+      - name: AppFriendships
+      - name: AppInvoices
+      - name: AppSubscriptionPayments
+      #Abstract
+      - name: AbstractRisk
+      - name: AbstractRiskIsFavourite
+      - name: AbstractRiskTag
+      #Accountability
+      - name: AccountabilityStatement
+      - name: AccountabilityStatementRejectionReason
+      - name: AccountabilityStatementSnapshot
+      #Advisor
+      - name: AdvisorSupportRequest
+      - name: AdvisorInvite
+      #Action
+      - name: Action
+      #AddOnFeatures
+      - name: AddOnFeatures
+      #BulkSendAssessment
+      - name: BulkSendAssessmentLog
+      - name: BulkSendAssessmentRecord
+      #Calendar
+      - name: CalendarEvents
+      #ConditionalQuestion
+      - name: ConditionalQuestion
+      #Content
+      - name: Content
+      - name: ContentBlock
+      - name: ContentCategory
+      #UserFavouriteAssessment
+      - name: UserFavouriteAssessment
