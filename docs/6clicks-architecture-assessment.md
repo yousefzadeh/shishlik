@@ -10,6 +10,15 @@
 
 ## 3. Current State Assessment
 
+### Strategy
+- Big part is multi-region, whatever architecture needs to be able to be rolled out to different regions. Keep costs efficient
+  - Flagship regions are AU and UK
+- Doing more AI stuff, vector databases  
+- Any nlp use cases?  
+  - Could see that happening. Next 3-6 months lots of similarity searches. Not much training
+- Analytics across regions is not possible right now  
+  - Raw data can’t go out of the region
+
 #TODO what are my goals in this assessment
 - current setup
 - exsiting initiatives
@@ -236,6 +245,7 @@ idea: a 2 * 2 of sorts: value vs. effort?
     - Just joins and CASE statements - no JSON, no explosions
     - Yellowfin queries simple tables, not 766-line views
     - TenantId baked in for access filtering
+- Privacy and Data Residency: Raw data can’t go out of the region
 
 ### principles - Ways of Working
 - How to eat an elephant? One bite at a time

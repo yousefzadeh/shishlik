@@ -1,0 +1,26 @@
+# Friday 19 Dec
+- Started with synapse on its own server, was costing thousands per month  
+- Strategy  
+  - Big part is multi-region, whatever architecture needs to be able to be rolled out to different regions. Keep costs efficient  
+  - Doing more AI stuff, vector databases  
+  - Any nlp use cases?  
+    - Could see that happening. Next 3-6 months lots of similarity searches. Not much training  
+- Flagship regions AU and UK  
+- Analytics across regions is not possible right now  
+  - Raw data can’t go out of the region  
+- 26 plan  
+  - Before we proceed any further, let’s make sure we evaluate these options  
+  - Let’s sort out the decision first  
+    - Framework for making the data warehouse direction:   
+      - synapse vs. databricks vs. fabric  
+      - What are principles, criteria and requirements  
+        - Cost  
+        - Security  
+        - Team skills  
+        - Maintenance  
+        -   
+    - Does it scale across different regions  
+      - Can the cost be manageable  
+      - Is it appropriate for this solution?  
+    - tentantId and partitioning  
+      - The one we currently have is the spoke, and the hub can access those
