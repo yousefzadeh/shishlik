@@ -790,10 +790,331 @@ stages:
 
 ---
 
+---
+
+## Alternate Plan: Autoloader + Materialized Views
+
+This plan prioritizes **cost efficiency** with scheduled batch runs instead of streaming.
+
+### Architecture
+
+```
+ADF CDC → Parquet → ADLS Landing
+                        │
+                        ▼ (Event Grid notifies)
+              ┌─────────────────────┐
+              │   Azure Event Grid  │ ← Blob created events
+              └─────────┬───────────┘
+                        │
+                        ▼ (Queue stores events)
+              ┌─────────────────────┐
+              │  Storage Queue or   │ ← Accumulates file notifications
+              │    Service Bus      │
+              └─────────┬───────────┘
+                        │
+                        ▼ (Scheduled job processes queue)
+              ┌─────────────────────────────────────────┐
+              │  Databricks Job (Scheduled, e.g. hourly) │
+              │  ┌─────────────────────────────────────┐ │
+              │  │  Autoloader (cloudFiles)            │ │
+              │  │  reads Parquet → writes Delta       │ │
+              │  └─────────────────────────────────────┘ │
+              │                   │                      │
+              │                   ▼                      │
+              │  ┌─────────────────────────────────────┐ │
+              │  │  Bronze (Delta Tables)              │ │
+              │  │  Append-only, raw data              │ │
+              │  └─────────────────────────────────────┘ │
+              │                   │                      │
+              │                   ▼                      │
+              │  ┌─────────────────────────────────────┐ │
+              │  │  Materialized Views (Silver/Gold)   │ │
+              │  │  Auto-refresh after Bronze updated  │ │
+              │  └─────────────────────────────────────┘ │
+              └─────────────────────────────────────────┘
+```
+
+### File Notification: Azure Event Grid
+
+Azure Event Grid is the Azure equivalent of AWS SQS/SNS for event-driven architectures. When a new parquet file lands in ADLS, Event Grid can notify you.
+
+**Setup:**
+
+```hcl
+# Event Grid subscription for blob created events
+resource "azurerm_eventgrid_event_subscription" "blob_created" {
+  name  = "new-parquet-files"
+  scope = azurerm_storage_account.data.id
+
+  included_event_types = ["Microsoft.Storage.BlobCreated"]
+
+  subject_filter {
+    subject_begins_with = "/blobServices/default/containers/landing/"
+    subject_ends_with   = ".parquet"
+  }
+
+  # Option 1: Storage Queue (simpler, cheaper)
+  storage_queue_endpoint {
+    storage_account_id = azurerm_storage_account.data.id
+    queue_name         = "new-files"
+  }
+
+  # Option 2: Service Bus (more features)
+  # service_bus_queue_endpoint_id = azurerm_servicebus_queue.new_files.id
+}
+```
+
+**How Autoloader uses this:** Autoloader has a "file notification mode" that subscribes directly to Event Grid. No need for a separate queue—Autoloader handles it:
+
+```python
+df = (spark.readStream
+    .format("cloudFiles")
+    .option("cloudFiles.format", "parquet")
+    .option("cloudFiles.useNotifications", "true")  # Uses Event Grid
+    .option("cloudFiles.subscriptionId", "<subscription-id>")
+    .option("cloudFiles.tenantId", "<tenant-id>")
+    .option("cloudFiles.clientId", "<service-principal-client-id>")
+    .option("cloudFiles.clientSecret", dbutils.secrets.get("keyvault", "sp-secret"))
+    .option("cloudFiles.resourceGroup", "rg-data-aue")
+    .load("abfss://landing@st6clicksdataaue.dfs.core.windows.net/Answer/"))
+```
+
+**Trade-off:** File notification mode requires a service principal with Event Grid permissions. For PoC, directory listing mode is simpler.
+
+### Autoloader Does NOT Support Merge
+
+**Autoloader is append-only.** It tracks which files have been processed and appends new records to the Delta table. It does not:
+- Deduplicate
+- Update existing records
+- Handle CDC merge semantics
+
+**For SCD/Merge, you need a two-step pattern:**
+
+```python
+# Step 1: Autoloader appends to a staging table (Bronze)
+(spark.readStream
+    .format("cloudFiles")
+    .option("cloudFiles.format", "parquet")
+    .option("cloudFiles.schemaLocation", "/checkpoints/answer_schema")
+    .load("abfss://landing@st6clicksdataaue.dfs.core.windows.net/Answer/")
+    .writeStream
+    .option("checkpointLocation", "/checkpoints/answer")
+    .trigger(availableNow=True)  # Scheduled batch, not continuous streaming
+    .toTable("bronze_6clicks.answer_raw"))
+
+# Step 2: Separate job merges into Silver (using MERGE INTO or dbt incremental)
+```
+
+### Scheduled Autoloader (Cost-Optimized)
+
+Instead of running Autoloader continuously (streaming), use **Trigger.AvailableNow** for scheduled batch processing:
+
+```python
+# This processes all available files, then stops
+# Perfect for hourly/daily scheduled runs
+(spark.readStream
+    .format("cloudFiles")
+    .option("cloudFiles.format", "parquet")
+    .option("cloudFiles.schemaLocation", "/checkpoints/schema/answer")
+    .load("abfss://landing@st6clicksdataaue.dfs.core.windows.net/Answer/")
+    .writeStream
+    .format("delta")
+    .option("checkpointLocation", "/checkpoints/answer")
+    .trigger(availableNow=True)  # ← KEY: processes batch then exits
+    .toTable("dev_catalog.bronze_6clicks.answer"))
+```
+
+**Cost comparison (Jobs Compute Serverless @ ~$0.40/DBU, much cheaper than SQL Warehouse):**
+
+| Mode | Cluster Runtime | Monthly Cost |
+|------|-----------------|--------------|
+| Streaming (always on) | 720 hours | $1,150+ |
+| Scheduled hourly (5 min/run) | 60 hours | ~$95 |
+| Scheduled hourly (2 min/run) | 24 hours | ~$40 |
+
+### Materialized Views on Bronze
+
+**⚠️ Important:** Materialized View refresh runs on **SQL Warehouse** (not Jobs Compute), so it's more expensive (~$0.70/DBU vs $0.40/DBU). For cost-sensitive workloads, consider **Delta Live Tables (DLT)** instead—DLT runs on Jobs Compute pricing.
+
+Once Bronze Delta tables exist, create materialized views for Silver/Gold:
+
+```sql
+-- Silver: cleaned, typed, deduped
+CREATE MATERIALIZED VIEW dev_catalog.silver_6clicks.answer
+AS
+SELECT
+    Id,
+    QuestionId,
+    TenantId,
+    Score,
+    RiskStatus,
+    CASE RiskStatus
+        WHEN 0 THEN 'No Risk'
+        WHEN 1 THEN 'Low Risk'
+        WHEN 3 THEN 'Medium Risk'
+        WHEN 4 THEN 'High Risk'
+        WHEN 5 THEN 'Very High Risk'
+        WHEN 6 THEN 'Very Low Risk'
+        ELSE 'Undefined'
+    END AS RiskStatusCode,
+    Compliance,
+    ComponentStr,
+    coalesce(LastModificationTime, CreationTime) AS UpdateTime
+FROM dev_catalog.bronze_6clicks.answer
+WHERE IsDeleted = 0 AND Status = 3
+QUALIFY ROW_NUMBER() OVER (PARTITION BY Id ORDER BY _rescued_data DESC) = 1;
+
+-- Gold: business-ready aggregation (e.g., QBA Question Answer)
+CREATE MATERIALIZED VIEW dev_catalog.gold_6clicks.qba_question_answer
+AS
+-- Databricks-compatible version of vwQBA_QuestionAnswer
+SELECT ...
+FROM dev_catalog.silver_6clicks.answer a
+JOIN dev_catalog.silver_6clicks.question q ON ...
+```
+
+### Materialized View Refresh Options
+
+```sql
+-- Manual refresh (for scheduled jobs)
+REFRESH MATERIALIZED VIEW dev_catalog.silver_6clicks.answer;
+
+-- Scheduled refresh (built-in)
+ALTER MATERIALIZED VIEW dev_catalog.silver_6clicks.answer
+SET TBLPROPERTIES ('schedule' = 'INTERVAL 1 HOUR');
+```
+
+### End-to-End Scheduled Pipeline
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  ADF Pipeline: 6clicks_scheduled_refresh (runs hourly)          │
+│                                                                  │
+│  1. [CDC Extract] → ADF copies changed rows to Parquet landing  │
+│                                                                  │
+│  2. [Databricks Job] → Autoloader (availableNow)                │
+│     - Answer, Question, QuestionGroup, QuestionGroupResponse    │
+│     - Appends to Bronze Delta tables                            │
+│                                                                  │
+│  3. [Databricks SQL] → REFRESH MATERIALIZED VIEW (Silver)       │
+│                                                                  │
+│  4. [Databricks SQL] → REFRESH MATERIALIZED VIEW (Gold)         │
+│                                                                  │
+│  5. [Optional] → Push Gold to SQL Server for Yellowfin          │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Cost Estimate (Alternate Plan)
+
+**Compute pricing (Azure, approximate):**
+
+| Compute Type | $/DBU | Use Case |
+|--------------|-------|----------|
+| Jobs Compute Serverless | ~$0.40 | Autoloader, DLT, Spark jobs |
+| SQL Warehouse Serverless | ~$0.70 | Queries, MV refresh |
+| Classic Jobs (with clusters) | ~$0.22 | Cheapest, but startup latency |
+
+**Option A: Autoloader + Materialized Views**
+
+| Component | Compute | Calculation | Monthly Cost |
+|-----------|---------|-------------|--------------|
+| Autoloader Job (hourly, 2 min) | Jobs Compute | 24 hrs × ~$1.60/hr | ~$40 |
+| MV Refresh (hourly, 3 min) | SQL Warehouse | 36 hrs × $3.80/hr | ~$135 |
+| Storage (Bronze Delta) | — | +50 GB | ~$2 |
+| Event Grid | — | 10K events | ~$0.01 |
+| **Total** | | | **~$180/month** |
+
+**Option B: Autoloader + Delta Live Tables (cheapest)**
+
+DLT uses Jobs Compute pricing for both ingestion AND transformations:
+
+| Component | Compute | Calculation | Monthly Cost |
+|-----------|---------|-------------|--------------|
+| DLT Pipeline (hourly, 5 min) | Jobs Compute | 60 hrs × ~$1.60/hr | ~$95 |
+| Storage (Bronze + Silver Delta) | — | +100 GB | ~$3 |
+| Event Grid | — | 10K events | ~$0.01 |
+| **Total** | | | **~$100/month** |
+
+**vs. Current Plan (External Tables + dbt on SQL Warehouse @ ~$180/month):**
+- Option A (Autoloader + MV): Similar cost, but gains Delta features in Bronze
+- Option B (Autoloader + DLT): **~45% cheaper**, all on Jobs Compute pricing
+
+### Delta Live Tables (DLT) Alternative
+
+DLT is Databricks' declarative ETL framework. It runs on **Jobs Compute** (cheaper) and handles both ingestion and transformations:
+
+```python
+# DLT notebook - entire pipeline in one file
+import dlt
+from pyspark.sql.functions import *
+
+# Bronze: Autoloader ingestion
+@dlt.table(comment="Raw answers from landing")
+def bronze_answer():
+    return (spark.readStream
+        .format("cloudFiles")
+        .option("cloudFiles.format", "parquet")
+        .load("abfss://landing@st6clicksdataaue.dfs.core.windows.net/Answer/"))
+
+# Silver: cleaned and typed (runs on Jobs Compute, not SQL Warehouse!)
+@dlt.table(comment="Cleaned answers")
+def silver_answer():
+    return (dlt.read("bronze_answer")
+        .filter("IsDeleted = 0 AND Status = 3")
+        .withColumn("RiskStatusCode", 
+            when(col("RiskStatus") == 0, "No Risk")
+            .when(col("RiskStatus") == 1, "Low Risk")
+            .otherwise("Undefined"))
+        .dropDuplicates(["Id"]))
+
+# Gold: aggregated (still Jobs Compute pricing)
+@dlt.table(comment="QBA Question Answer")
+def gold_qba_question_answer():
+    answer = dlt.read("silver_answer")
+    question = dlt.read("silver_question")
+    return answer.join(question, answer.QuestionId == question.Id)
+```
+
+**DLT vs Materialized Views:**
+
+| Feature | Materialized Views | Delta Live Tables |
+|---------|-------------------|-------------------|
+| Compute | SQL Warehouse ($0.70/DBU) | Jobs Compute ($0.40/DBU) |
+| Language | SQL only | SQL or Python |
+| Schema evolution | Manual | Automatic |
+| Data quality | None | Built-in expectations |
+| Lineage | Unity Catalog | Built-in + Unity Catalog |
+
+### When to Use This Plan
+
+✅ **Use Autoloader + DLT when:**
+- Cost is the priority (all Jobs Compute pricing)
+- You want automatic schema evolution
+- Pipeline complexity is moderate
+- Team is comfortable with Python notebooks
+
+✅ **Use Autoloader + MVs when:**
+- Team prefers pure SQL
+- Views are simple (SELECT with filters/joins)
+- You want ad-hoc REFRESH control
+
+❌ **Stick with External Tables + dbt when:**
+- Storage cost is critical (no Delta copy)
+- Complex transformation logic (dbt is more testable)
+- Team already knows dbt
+- Need dbt docs/lineage features
+
+---
+
 ## References
 
 - [Unity Catalog on Azure](https://learn.microsoft.com/en-us/azure/databricks/data-governance/unity-catalog/)
 - [Terraform Databricks Provider](https://registry.terraform.io/providers/databricks/databricks/latest/docs)
 - [Autoloader](https://docs.databricks.com/ingestion/auto-loader/index.html)
+- [Autoloader File Notification Mode](https://docs.databricks.com/ingestion/auto-loader/file-notification-mode.html)
+- [Azure Event Grid + Blob Storage](https://learn.microsoft.com/en-us/azure/event-grid/blob-event-quickstart-portal)
+- [Materialized Views in Databricks](https://docs.databricks.com/en/sql/language-manual/sql-ref-syntax-ddl-create-materialized-view.html)
+- [Delta Live Tables](https://docs.databricks.com/en/delta-live-tables/index.html)
 - [Serverless SQL Warehouses](https://docs.databricks.com/sql/admin/serverless.html)
+- [Jobs Compute Pricing](https://www.databricks.com/product/pricing)
 
