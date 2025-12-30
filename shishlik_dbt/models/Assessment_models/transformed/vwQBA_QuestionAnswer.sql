@@ -4,7 +4,7 @@ with
         select
             Id,
             cast(coalesce(a.LastModificationTime, a.CreationTime) as smalldatetime) Answer_LastModificationTime,
-            QuestionId,
+            QuestionId,is this
             case when ComponentStr = '' then NULL else  ComponentStr 
                     end as ComponentStr,
             TenantId,

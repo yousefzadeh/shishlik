@@ -45,10 +45,10 @@ Single-region proof of concept in **Australia East** with 5-10 source tables, de
 | Private endpoints (future, not PoC) | ✓ | |
 | **Data Layer** | | |
 | Catalog & schema creation | | ✓ |
+| Bronze external tables | | ✓ |
 | ADF CDC pipelines | | ✓ |
-| Autoloader jobs | | ✓ |
 | dbt models (silver, gold) | | ✓ |
-| Orchestration (ADF or Workflows) | | ✓ |
+| Orchestration (ADF or Azure DevOps) | | ✓ |
 | Data quality checks | | ✓ |
 | **Shared** | | |
 | Access policies (who can access what) | ✓ | ✓ |
@@ -82,16 +82,16 @@ Each environment gets its own catalog:
 
 ```
 dev_catalog
-├── bronze_6clicks          # Raw ingested data (Delta)
-│   ├── answer
-│   ├── question
-│   ├── question_group
+├── bronze_6clicks          # External tables (Parquet from landing)
+│   ├── answer              # → reads from landing/Answer/
+│   ├── question            # → reads from landing/Question/
+│   ├── question_group      # → reads from landing/QuestionGroup/
 │   └── ...
-├── silver_6clicks          # Cleaned, parsed, deduplicated
+├── silver_6clicks          # Managed Delta tables (cleaned, parsed)
 │   ├── answer
 │   ├── question_with_type_labels
 │   └── ...
-└── gold_6clicks            # Business-ready aggregates
+└── gold_6clicks            # Managed Delta tables (business-ready)
     ├── qba_question_answer
     └── ...
 
@@ -297,42 +297,24 @@ WITH (STORAGE CREDENTIAL unity_catalog_credential);
 GRANT READ FILES ON EXTERNAL LOCATION landing_aue TO `data-engineers`;
 ```
 
-### 2.3 Autoloader Bronze Ingestion
+### 2.3 Bronze Layer: External Tables
 
-```python
-# notebooks/bronze/ingest_answer.py
-
-from pyspark.sql.functions import current_timestamp, input_file_name
-
-source_path = "abfss://landing@st6clicksdataaue.dfs.core.windows.net/Answer/"
-target_table = "dev_catalog.bronze_6clicks.answer"
-checkpoint_path = "/Volumes/dev_catalog/bronze_6clicks/_checkpoints/answer"
-
-# Autoloader with COPY INTO style (batch)
-df = (spark.readStream
-    .format("cloudFiles")
-    .option("cloudFiles.format", "parquet")
-    .option("cloudFiles.schemaLocation", checkpoint_path)
-    .option("cloudFiles.inferColumnTypes", "true")
-    .load(source_path)
-    .withColumn("_ingested_at", current_timestamp())
-    .withColumn("_source_file", input_file_name())
-)
-
-# Write to managed Delta table
-(df.writeStream
-    .format("delta")
-    .option("checkpointLocation", checkpoint_path)
-    .option("mergeSchema", "true")
-    .trigger(availableNow=True)  # Process all available files, then stop
-    .toTable(target_table)
-)
-```
-
-### 2.4 Alternative: COPY INTO (Simpler)
+For PoC, bronze layer uses **external tables** pointing directly to landing parquet files. No data movement, no extra storage cost.
 
 ```sql
--- Simpler batch approach, good for PoC
+-- Create external table pointing to ADF landing data
+CREATE TABLE IF NOT EXISTS dev_catalog.bronze_6clicks.answer
+USING PARQUET
+LOCATION 'abfss://landing@st6clicksdataaue.dfs.core.windows.net/Answer/';
+
+-- Refresh metadata when new files arrive
+MSCK REPAIR TABLE dev_catalog.bronze_6clicks.answer;
+```
+
+**Alternative: COPY INTO (if you want managed Delta tables)**
+
+```sql
+-- Copies data into managed Delta table with incremental file tracking
 COPY INTO dev_catalog.bronze_6clicks.answer
 FROM 'abfss://landing@st6clicksdataaue.dfs.core.windows.net/Answer/'
 FILEFORMAT = PARQUET
@@ -340,19 +322,29 @@ FORMAT_OPTIONS ('mergeSchema' = 'true')
 COPY_OPTIONS ('mergeSchema' = 'true');
 ```
 
-### 2.5 dbt Project Structure
+**Trade-offs:**
+
+| Approach | Pros | Cons |
+|----------|------|------|
+| External tables | No data duplication, simple | No Delta features, schema changes need DDL |
+| COPY INTO | Delta benefits, auto-schema merge | Extra storage, small compute cost |
+
+**Recommendation for PoC:** Start with external tables. Move to COPY INTO if you need Delta features like time travel or merge.
+
+### 2.4 dbt Project Structure
 
 ```
 dbt_6clicks/
 ├── dbt_project.yml
 ├── profiles.yml
 ├── models/
-│   ├── bronze/                    # Optional: can skip if using Autoloader
-│   ├── silver/
+│   ├── staging/                   # References bronze external tables
+│   │   └── stg_answer.sql
+│   ├── silver/                    # Managed Delta tables
 │   │   ├── silver_answer.sql
 │   │   ├── silver_question.sql
 │   │   └── silver_question_with_types.sql
-│   └── gold/
+│   └── gold/                      # Managed Delta tables
 │       └── gold_qba_question_answer.sql
 └── macros/
     └── risk_status_label.sql
@@ -369,20 +361,46 @@ model-paths: ["models"]
 
 models:
   sixclicks:
-    bronze:
-      +materialized: view  # Just reference Autoloader tables
+    staging:
+      +materialized: view           # Just reference bronze external tables
       +schema: bronze_6clicks
     silver:
-      +materialized: incremental
+      +materialized: incremental    # Managed Delta with incremental
       +schema: silver_6clicks
+      +incremental_strategy: merge
+      +unique_key: id
     gold:
-      +materialized: table  # Full refresh for push-back
+      +materialized: table          # Full refresh for push-back
       +schema: gold_6clicks
+```
+
+```yaml
+# profiles.yml
+databricks:
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      catalog: dev_catalog
+      schema: silver_6clicks
+      host: "{{ env_var('DATABRICKS_HOST') }}"
+      http_path: /sql/1.0/warehouses/xxxxx  # dbt warehouse ID
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
 ```
 
 ---
 
 ## Phase 3: Orchestration (Week 3)
+
+### Scheduling Options for dbt
+
+| Option | Pros | Cons |
+|--------|------|------|
+| **Azure Data Factory** | Already in stack for CDC, visual UI, built-in monitoring | Overkill for just dbt scheduling |
+| **Azure DevOps Pipelines** | Familiar to team, good for CI/CD + scheduling | Needs agent/container setup |
+| **GitHub Actions** | Simple YAML, free tier available | May need to migrate repos |
+
+**Recommendation:** Use **Azure Data Factory** for the full pipeline (CDC → dbt → push-back) since it's already orchestrating CDC. Single tool for all orchestration.
 
 ### 3.1 ADF Pipeline for Full Flow
 
@@ -390,51 +408,104 @@ models:
 graph LR
     subgraph "ADF Pipeline: 6clicks_refresh"
         A[CDC Extract] --> B[Wait for files]
-        B --> C[Trigger Databricks Job]
-        C --> D[Autoloader Bronze]
-        D --> E[dbt run silver]
-        E --> F[dbt run gold]
-        F --> G[Push to SQL Server]
-        G --> H[Blue-Green Switch]
+        B --> C[COPY INTO Bronze]
+        C --> D[dbt run silver]
+        D --> E[dbt run gold]
+        E --> F[Push to SQL Server]
+        F --> G[Blue-Green Switch]
     end
 ```
 
-### 3.2 Databricks Workflow (Alternative)
+### 3.2 ADF + dbt Integration
+
+ADF can run dbt in two ways:
+
+**Option A: Azure Container Instance (Recommended for PoC)**
+
+```json
+{
+  "name": "dbt_run_activity",
+  "type": "AzureContainerInstance",
+  "typeProperties": {
+    "image": "ghcr.io/dbt-labs/dbt-databricks:latest",
+    "command": ["dbt", "run", "--profiles-dir", "/profiles"],
+    "environmentVariables": {
+      "DATABRICKS_HOST": "@pipeline().parameters.databricks_host",
+      "DATABRICKS_TOKEN": "@pipeline().parameters.databricks_token"
+    }
+  }
+}
+```
+
+**Option B: Azure DevOps Scheduled Pipeline**
 
 ```yaml
-# Can be created via Terraform or Databricks API
-resources:
-  jobs:
-    sixclicks_refresh:
-      name: "6clicks Data Refresh"
-      schedule:
-        quartz_cron_expression: "0 */10 * * * ?"  # Every 10 min
-        timezone_id: "Australia/Sydney"
-      
-      tasks:
-        - task_key: "bronze_ingest"
-          notebook_task:
-            notebook_path: "/Repos/6clicks/notebooks/bronze/ingest_all"
-          job_cluster_key: "serverless"
-        
-        - task_key: "dbt_silver"
-          depends_on:
-            - task_key: "bronze_ingest"
-          dbt_task:
-            project_directory: "/Repos/6clicks/dbt_6clicks"
-            commands:
-              - "dbt run --select silver"
-          job_cluster_key: "serverless"
-        
-        - task_key: "dbt_gold"
-          depends_on:
-            - task_key: "dbt_silver"
-          dbt_task:
-            project_directory: "/Repos/6clicks/dbt_6clicks"
-            commands:
-              - "dbt run --select gold"
-          job_cluster_key: "serverless"
+# azure-pipelines-dbt.yml
+trigger: none
+
+schedules:
+  - cron: "0 * * * *"  # Every hour
+    displayName: "Hourly dbt run"
+    branches:
+      include:
+        - main
+    always: true
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.10'
+
+  - script: |
+      pip install dbt-databricks
+      cd dbt_6clicks
+      dbt run --target prod
+    displayName: 'Run dbt'
+    env:
+      DATABRICKS_HOST: $(DATABRICKS_HOST)
+      DATABRICKS_TOKEN: $(DATABRICKS_TOKEN)
 ```
+
+### 3.3 Serverless SQL Warehouse Configuration
+
+```hcl
+# Two separate warehouses for isolation
+resource "databricks_sql_endpoint" "dbt" {
+  name             = "dbt-processing"
+  cluster_size     = "2X-Small"
+  max_num_clusters = 1
+  auto_stop_mins   = 1
+  
+  warehouse_type   = "PRO"  # Required for serverless
+  enable_serverless_compute = true
+  
+  tags {
+    custom_tags {
+      key   = "purpose"
+      value = "dbt"
+    }
+  }
+}
+
+resource "databricks_sql_endpoint" "yellowfin" {
+  name             = "yellowfin-serving"
+  cluster_size     = "2X-Small"
+  max_num_clusters = 1
+  auto_stop_mins   = 1  # Scale to zero quickly
+  
+  warehouse_type   = "PRO"
+  enable_serverless_compute = true
+  
+  tags {
+    custom_tags {
+      key   = "purpose"
+      value = "yellowfin"
+    }
+  }
+}
 
 ---
 
@@ -510,14 +581,91 @@ PoC is single region, but designed for expansion:
 
 ## Cost Estimate (PoC - Australia East)
 
-| Component | Monthly Cost (AUD) |
+### Executive Summary
+
+| Component | Monthly Cost (USD) |
 |-----------|-------------------|
-| Databricks workspaces (3x Premium) | $0 (pay per use) |
-| Serverless SQL DBUs (~100 DBU-hrs @ $0.70) | ~$70 |
+| dbt Serverless SQL Warehouse (2X-Small) | ~$90 |
+| Yellowfin Serverless SQL Warehouse (2X-Small) | ~$80 |
 | ADLS Storage (100 GB) | ~$3 |
-| ADF (100 pipeline runs) | ~$5 |
-| Unity Catalog | Included in Premium |
-| **Total PoC** | **~$80-100/month** |
+| ADF Pipeline Runs | ~$5 |
+| Unity Catalog | Included |
+| **Total PoC** | **~$180/month** |
+
+---
+
+### Detailed Cost Breakdown
+
+This section provides a transparent breakdown of how costs were calculated.
+
+#### Serverless SQL Warehouse Pricing (from Databricks)
+
+| Size | DBUs | Hourly Cost |
+|------|------|-------------|
+| 2X-Small | 4 | $3.80 |
+| X-Small | 6 | $5.70 |
+| Small | 12 | $11.40 |
+| Medium | 24 | $22.80 |
+
+#### Assumptions
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| dbt run frequency | Every hour (24/day) | Processes silver + gold layers |
+| dbt run duration | 2 minutes | Minimal data volume |
+| dbt warehouse size | 2X-Small | $3.80/hour |
+| Yellowfin queries/day | ~100 (weekdays) | Minimal on weekends |
+| Yellowfin session duration | ~2 min | Includes startup + query + idle |
+| Yellowfin warehouse size | 2X-Small | $3.80/hour |
+| Region | Australia East | |
+
+#### 1. dbt Processing Warehouse (2X-Small)
+
+```
+Daily runtime:     24 runs × 2 min = 48 min = 0.8 hours/day
+Monthly runtime:   0.8 hours × 30 days = 24 hours/month
+Hourly rate:       $3.80/hour
+Monthly cost:      24 × $3.80 = $91 ≈ $90
+```
+
+**Key point:** Serverless SQL Warehouses scale to zero when idle. You only pay for the 2 minutes each hour when dbt is actually running.
+
+#### 2. Yellowfin Serving Warehouse (2X-Small)
+
+```
+Weekday usage:     100 queries × ~2 min session = ~50 min/day
+Weekend usage:     Minimal, ~10 min/day
+Monthly runtime:   (22 weekdays × 50 min) + (8 weekend days × 10 min)
+                 = 1100 + 80 = 1180 min = ~20 hours/month
+Hourly rate:       $3.80/hour
+Monthly cost:      20 × $3.80 = $76 ≈ $80
+```
+
+**Key point:** Serverless scales to zero between queries. Weekend usage is minimal. Most queries are batched during business hours.
+
+#### 3. Storage & Other
+
+| Item | Calculation | Cost |
+|------|-------------|------|
+| ADLS Gen2 (Hot tier) | 100 GB × $0.023/GB | ~$3/month |
+| ADF Pipeline runs | ~700 runs × $0.001 | ~$1/month |
+| ADF Activity runs | ~2100 activities × $0.00001 | ~$0.02/month |
+| Unity Catalog | Included in Premium | $0 |
+
+#### Cost Scaling Considerations
+
+| Scenario | Impact |
+|----------|--------|
+| Increase dbt frequency to every 10 min | 6× more runs, but similar total runtime if each run is faster |
+| Add more regions | Linear cost increase per region |
+| Larger data volumes | May need larger warehouses or longer runtimes |
+| Reduce Yellowfin usage | Direct cost reduction |
+
+#### What's NOT Included
+
+- Egress charges (minimal for same-region)
+- Azure DevOps (likely covered by existing subscription)
+- Team time for development
 
 ---
 
@@ -526,9 +674,12 @@ PoC is single region, but designed for expansion:
 - [ ] All 3 workspaces provisioned via Terraform
 - [ ] Unity Catalog with 3 catalogs (dev/staging/prod)
 - [ ] 5-10 tables flowing through bronze → silver → gold
-- [ ] Autoloader processing incremental parquet files
-- [ ] dbt models running on serverless
+- [ ] Bronze layer as external tables reading ADF landing data
+- [ ] Silver/gold as managed Delta tables
+- [ ] dbt running on 2X-Small Serverless SQL Warehouse
+- [ ] Yellowfin connected to 2X-Small Serverless SQL Warehouse
 - [ ] Azure AD groups controlling access
+- [ ] Hourly dbt runs scheduled (ADF or Azure DevOps)
 - [ ] End-to-end latency < 15 minutes
 - [ ] Documentation for handover
 
@@ -536,8 +687,10 @@ PoC is single region, but designed for expansion:
 
 ## Azure DevOps Pipeline Structure
 
+### Infrastructure CI/CD (Terraform)
+
 ```yaml
-# azure-pipelines.yml
+# azure-pipelines-infra.yml
 trigger:
   branches:
     include:
@@ -575,6 +728,52 @@ stages:
                     provider: 'azurerm'
                     command: 'apply'
                     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+```
+
+### dbt Code CI/CD
+
+```yaml
+# azure-pipelines-dbt-ci.yml
+trigger:
+  branches:
+    include:
+      - main
+      - feature/*
+  paths:
+    include:
+      - dbt_6clicks/**
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Test
+    jobs:
+      - job: dbtTest
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.10'
+          - script: |
+              pip install dbt-databricks
+              cd dbt_6clicks
+              dbt deps
+              dbt compile --target dev
+            displayName: 'Compile dbt models'
+
+  - stage: Deploy
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    jobs:
+      - deployment: DeployDbt
+        environment: 'databricks-dev'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: |
+                    # Sync dbt project to Databricks Repos or DBFS
+                    echo "Deploying dbt project..."
+                  displayName: 'Deploy dbt to Databricks'
 ```
 
 ---
