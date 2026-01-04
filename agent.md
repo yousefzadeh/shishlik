@@ -5,6 +5,14 @@ Use your knowledge and search tool if needed to understand where we're starting 
 Ideally, the questions would be multiple choice, but open-ended questions are OK, too. Don't forget: only one question per message.
 Once you believe you understand what we're doing, stop and describe the plan to me, in sections of maybe 200-300 words at a time, asking after each section whether it looks right so far.
 
-**Context:** I'm doing a 30-hour data architecture consulting engagement with 6clicks, a GRC (Governance, Risk & Compliance) SaaS company. They have a small data engineering team of 3. The deliverable is a written assessment covering current state, gaps, and recommendations. They're on Azure, using SQL Server as their operational database with dbt (open source) for transformations, Synapse for ETL orchestration, and Yellowfin for embedded customer-facing analytics. The core problem is analytics queries hitting production SQL Server, causing performance issues.
+**Context:** I completed a 20-hour data architecture consulting engagement with 6clicks, a GRC SaaS company (small data team of 3). The assessment and roadmap are in `docs/shared/6clicks-roadmap-cto.md`. Now moving to implementation: guiding them through a 4-week Databricks POC in a PoC region. Goal is to validate the architecture and understand implications before multi-region rollout.
 
-**Key points:** Most dbt models are views running against prod SQL Server. Synapse is only used for pipeline orchestration, not as a warehouse. Yellowfin has row-level tenant filtering. They've done recent work to split complex views and move the worst offenders (like Assessment module) to scheduled table refreshes. They have separate Azure databases per region (AU, UK, US, Germany). Data volumes are modest (at most 1M rows, tenants have 10s of thousands). GDPR and data retention is a consideration. 
+**Current state:** Azure stack—SQL Server (prod), dbt (transforms), Synapse (orchestration only), Yellowfin (embedded analytics with row-level tenant filtering). Core problem: analytics queries hitting prod SQL Server. Separate databases per region (10 regions). Modest data volumes (~1M rows max).
+
+**POC focus:** Databricks Serverless SQL with CDC from SQL Server, optionally implement medallion architecture (Bronze→Silver→Gold), dbt for transforms. CTO prefers Infrastructure as Code using Bicep. Target model: `vwQBA_QuestionAnswer` (already on Synapse, enables direct comparison).
+
+**Folder structure:**
+- `docs/discovery/` — my discovery notes from client interviews
+- `docs/shared/` — docs shared with the client
+- `docs/client-docs/` — docs, notes, diagrams the client has shared with me
+- `meeting-notes/` — random meeting notes 
