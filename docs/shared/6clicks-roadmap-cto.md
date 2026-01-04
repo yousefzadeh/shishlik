@@ -196,9 +196,9 @@ flowchart LR
 
 ## 8\. Next Steps
 
-1. Validate assumptions on CDC  
-   - Decide on the approach (CDC on the SQL server vs. ADF)  
-2. Do some preliminary cost estimation; be conservative  
-3. Review and align on principles  
-4. Approve POC scope (which table, which region)  
-5. Allocate team capacity for Phase 0 \+ Phase 1
+1. Validate assumptions on CDC [Done]
+   - Decide on the approach (CDC on the SQL server vs. ADF) 
+2. Do some preliminary cost estimation; be conservative [Done, <$200 for first month]
+3. Review and align on principles [Done]
+4. Approve POC scope (which table, which region) [Done, QBA, AU]
+5. Allocate team capacity for Phase 0 \+ Phase 1 [Done]
