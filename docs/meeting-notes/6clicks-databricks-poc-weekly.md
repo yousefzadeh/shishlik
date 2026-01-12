@@ -33,3 +33,29 @@ Resolution for the ADF question will help us to move forward with the ADF pipeli
 - What's the current cost of running those self-hosted IRs (VMs)?
 - How easy/hard would it be to set up networking for managed IR? (private endpoints, etc.)
 - If we retire Synapse eventually, does that free up cost that could offset managed IR or other Databricks costs?
+
+- Suggestion: if networking too hard, start with self-hosted
+
+## Notes
+- Platform
+    - Created workspace and data lake
+    - creating ADF factory
+    - CDC: joel has enabled for the tables
+    - In a position to hook things up. all the things that can are done via bicep.
+        - created the connector to the catalog
+    - enabled cdc, didn't look into change tracking
+- Data
+    - working on both development and production
+
+- Notes
+    - Set up ADLS containers and ADF in dev first, to test any impact on database (all bicep so should be ok)
+
+- Next steps
+    - Jake to enable cdc on those tables
+
+- Two options
+    - test CDC and ADF on dev, everything else in prod
+    - test everything in dev (needs platform team to set up separate dev workspace)
+- Emphasis: let's not have any dev data going into production
+- CDC -> ADF -> ADLS 
+    - bronze will be parquet
