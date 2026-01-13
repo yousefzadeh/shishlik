@@ -9,7 +9,7 @@
       database: sqldb-6clicks-dev-spinup-ihsopk
       port: 1433
       schema: test_dbt_cicd
-      user: appuser
+      user: sa
       password: "{{ env_var('DB_PASSWORD') }}"
 
     autest:
@@ -29,7 +29,7 @@
       database: sqldb-6clicks-dev-spinup-ihsopk
       port: 1433
       schema: reporting
-      user: appuser
+      user: sa
       password: "{{ env_var('DB_PASSWORD') }}"
 
     yfspinup:
@@ -39,7 +39,7 @@
       database: sqldb-6clicks-dev-spinup-yfspinup
       port: 1433
       schema: reporting
-      user: appuser
+      user: sa
       password: "{{ env_var('DB_PASSWORD') }}"
 
     spinupmsi:
@@ -58,7 +58,7 @@
       database: sqldb-6clicks-dev-spinup-youxgh
       port: 1433
       schema: reporting
-      user: appuser
+      user: sa
       password: "{{ env_var('DB_PASSWORD') }}"
 
     spinup2msi:
@@ -194,7 +194,7 @@
       database: sqldb-6clicks-dev-spinup-ihsopk
       port: 1433
       schema: analytics
-      user: appuser
+      user: sa
       password: "{{ env_var('DB_PASSWORD') }}"
 
     analytics_yfspinup:
@@ -204,7 +204,7 @@
       database: sqldb-6clicks-dev-spinup-yfspinup
       port: 1433
       schema: analytics
-      user: appuser
+      user: sa
       password: "{{ env_var('DB_PASSWORD') }}"
 
     analytics_staging:

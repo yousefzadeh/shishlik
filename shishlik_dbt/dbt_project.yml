@@ -20,6 +20,10 @@ clean-targets:         # directories to be removed by `dbt clean`
     - "target"
     - "public"
 
+models:
+  sixclicks_dev_orig:
+    +on_schema_change: "append_new_columns" # Change from 'ignore' to this
+
 dispatch:
   - macro_namespace: dbt_utils
     search_order: ['tsql_utils', 'dbt_utils']
