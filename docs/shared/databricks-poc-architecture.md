@@ -24,10 +24,10 @@ flowchart LR
     
     subgraph "Analytics Platform"
         CDC[ADF CDC]
-        Bronze[Bronze<br/>Raw Parquet]
-        Silver[Silver<br/>Parsed & Clean]
-        Gold[Gold<br/>Business-Ready]
-        DBT[DBT]
+        Bronze[Bronze<br/>External Tables]
+        Silver[Silver MVs]
+        Gold[Gold MVs]
+        JOB[Hourly Job]
     end
     
     subgraph Serving
@@ -37,9 +37,9 @@ flowchart LR
     
     SQL -->|CDC/Change Tracking| CDC
     CDC --> Bronze
-    Bronze --> DBT
-    DBT --> Silver
-    DBT --> Gold
+    JOB -->|REFRESH| Silver
+    JOB -->|REFRESH| Gold
+    Bronze --> Silver --> Gold
     Gold -.->|Option B: push-back| SQLG
     SQLG -.-> YF
     Gold -->|Option A: direct| YF
@@ -49,8 +49,7 @@ flowchart LR
 1. Enable CDC or Change Tracking on required source tables in SQL Server  
 2. ADF scheduled pipeline extracts changes → writes to Bronze (Parquet)  
 3. Databricks External Tables point to Bronze layer  
-4. dbt runs on Databricks Serverless SQL: Bronze → Silver → Gold  
-   - Alternative : DBT creating materialized views  
+4. Databricks Job (hourly) refreshes Materialized Views: Bronze → Silver → Gold  
 5. Yellowfin queries Gold tables via:  
    - **Option A (Primary):** Direct connection to Databricks Serverless SQL  
    - **Option B (Fallback):** Push Gold tables back to SQL Server reporting schema (if Yellowfin connectivity is problematic)
@@ -142,7 +141,49 @@ graph TD
 
 ---
 
-## 5. Key Requirements
+## 5. Development Lifecycle
+
+### Materialization Strategy
+
+**All transformations as Materialized Views (MVs):**
+- Bronze: External tables pointing to landing Parquet (no refresh needed)
+- Silver: MVs with liquid clustering on `TenantId`
+- Gold: MVs with liquid clustering on `TenantId`
+
+### Refresh Orchestration
+
+**Approach:** Databricks SQL Warehouse Job runs hourly, refreshes MVs in dependency order.
+
+```
+CDC arrives → ADF writes to landing/ → Hourly Job → REFRESH MVs (Silver → Gold)
+```
+
+**Job definition (Databricks Workflow):**
+```sql
+-- Task 1: Refresh Silver MVs (parallel)
+REFRESH MATERIALIZED VIEW silver_6clicks.answer;
+REFRESH MATERIALIZED VIEW silver_6clicks.question;
+REFRESH MATERIALIZED VIEW silver_6clicks.question_options;
+REFRESH MATERIALIZED VIEW silver_6clicks.question_group;
+REFRESH MATERIALIZED VIEW silver_6clicks.question_group_response;
+
+-- Task 2: Refresh Gold MV (depends on Task 1)
+REFRESH MATERIALIZED VIEW gold_6clicks.qba_question_answer;
+```
+
+- Schedule: Hourly (or triggered by ADF completion)
+- Compute: Serverless SQL Warehouse
+- No dbt required for POC
+
+### Testing
+
+- DEV workspace with test data in `test_landing/`
+- Manual SQL execution to validate transforms
+- Compare Gold output against existing Synapse view
+
+---
+
+## 6. Key Requirements
 
 | Requirement | Approach |
 |-------------|----------|
@@ -160,7 +201,7 @@ graph TD
 
 ---
 
-## 6. PoC Scope (4 Weeks)
+## 7. PoC Scope (4 Weeks)
 
 **Region:** AU only  
 **Model:** `vwQBA_QuestionAnswer` (already implemented on Synapse — enables direct comparison)
@@ -186,5 +227,6 @@ graph TD
     - This will future-proof us, when the product team makes a change to the database schema they need to notify the data team as well and update the pipeline  
     - Acts as a data contract  
 - Bronze external tables  
-- dbt models: Silver \+ Gold  
+- Silver + Gold Materialized Views  
+- Databricks Job for hourly MV refresh  
 - Yellowfin connection to Databricks Serverless SQL

@@ -35,6 +35,7 @@ Resolution for the ADF question will help us to move forward with the ADF pipeli
 - If we retire Synapse eventually, does that free up cost that could offset managed IR or other Databricks costs?
 
 - Suggestion: if networking too hard, start with self-hosted
+- Decision: Ryan instructed Shankar to go with IR
 
 ## Notes
 - Platform
