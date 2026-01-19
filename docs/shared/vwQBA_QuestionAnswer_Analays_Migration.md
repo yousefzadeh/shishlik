@@ -5,6 +5,7 @@
 ### `a_raw` (lines 10-63)
 **Source:** `Answer` table  
 **Filter:** `IsDeleted = 0 AND Status = 3`
+**Granularity:** 1 row per `Answer` (after filter)
 
 **Transformations:**
 - `Answer_LastModificationTime` = `COALESCE(LastModificationTime, CreationTime)` ->  smalldatetime
@@ -20,6 +21,7 @@
 - Renames columns with `Answer_` prefix
 - `ComponentStr` NULL ->  default JSON: `{"RadioCustom":null,"Radio":null,"TextArea":null,"Submit":false,"MultiSelectValues":null,"Id":0}`
 - Extracts `Answer_Submit` from JSON (`$.Submit`)
+**Granularity:** 1 row per `Answer`
 
 **Used by:** `qa_multi_json`, `qa_no_answer`, `qa_freetext`, `qa_single`, `qa_group_single`  
 **Join key:** `QuestionId`  
@@ -33,6 +35,7 @@
 ### `q_raw` (lines 87-134)
 **Source:** `Question` table  
 **Filter:** `IsDeleted = 0`
+**Granularity:** 1 row per `Question` (after filter)
 
 **Transformations:**
 - `Question_LastModificationTime` = `COALESCE(LastModificationTime, CreationTime)` ->  smalldatetime
@@ -47,12 +50,14 @@
 ### `q` (lines 135-157)
 **Source:** `q_raw`  
 **Transformations:** Pass-through, just selects same columns (no additional logic)
+**Granularity:** 1 row per `Question`
 
 **Used by:** `qq`, `qa_multi_json`, `qa_no_answer`, `qa_freetext`, `qa_single`, `qa_group_single`
 
 ### `qq` (lines 158-168)
 **Source:** `q`  
 **Filter:** `Question_Type in (3, 7, 8)` — multi-select only
+**Granularity:** 1 row per `Question` option (one row per option value)
 
 **Purpose:** Explodes options JSON into rows — one row per option for score lookup
 
@@ -83,6 +88,7 @@ qq (1 row per option):
 ### `qa_multi_json` (lines 169-213)
 **Source:** `q` JOIN `a` on `Question_Id = Answer_QuestionId`  
 **Filter:** `Question_IsMultiSelectType = 1 AND Answer_ComponentStr IS NOT NULL`
+**Granularity:** 1 row per multi-select `Answer`
 
 **Purpose:** Prep layer for multi-select — joins Q+A and wraps the answer array for OPENJSON
 
@@ -102,6 +108,7 @@ Turns `["A", "C", "D"]` into `{ "answer": ["A", "C", "D"] }` — needed because 
 ### `qa_no_answer` (lines 215-257)
 **Source:** `q` LEFT JOIN `a` on `Question_Id = Answer_QuestionId`  
 **Filter:** `Answer_Id IS NULL`
+**Granularity:** 1 row per `Question` with no answer
 
 **Purpose:** Catches questions with no answer — creates dummy answer columns with defaults
 
@@ -120,6 +127,7 @@ Turns `["A", "C", "D"]` into `{ "answer": ["A", "C", "D"] }` — needed because 
 ### `qa_freetext` (lines 258-306)
 **Source:** `q` JOIN `a` on `Question_Id = Answer_QuestionId`  
 **Filter:** `Question_Type in (4, 9)` — Text Response, Short Text Response
+**Granularity:** 1 row per freetext `Answer`
 
 **Key points:**
 - `Answer_Score = NULL` — freetext not scored
@@ -132,6 +140,7 @@ Turns `["A", "C", "D"]` into `{ "answer": ["A", "C", "D"] }` — needed because 
 ### `qa_single` (lines 307-356)
 **Source:** `q` JOIN `a` on `Question_Id = Answer_QuestionId`  
 **Filter:** `Question_IsMultiSelectType = 0 AND Answer_ComponentStr IS NOT NULL AND Question_Type in (1, 2, 5, 6, 10)`
+**Granularity:** 1 row per single-select `Answer`
 
 **Key points:**
 - `AnswerResponse_Value` extracted by type:
@@ -146,6 +155,7 @@ Turns `["A", "C", "D"]` into `{ "answer": ["A", "C", "D"] }` — needed because 
 ### `qa_multi` (lines 357-431)
 **Source:** `qa_multi_json` OUTER APPLY OPENJSON + LEFT JOIN `qq`  
 **Join:** `qq.Question_Id = qa.Question_Id AND answer_kv.value = qq.QuestionOption_Value`
+**Granularity:** 1 row per selected option (`Answer_Id` + option value)
 
 **This is where the explosion happens** — one row per selected option.
 
@@ -168,12 +178,14 @@ Turns `["A", "C", "D"]` into `{ "answer": ["A", "C", "D"] }` — needed because 
 ### `QuestionGroup` (lines 432-437)
 **Source:** `QuestionGroup` table  
 **Filter:** `IsDeleted = 0`
+**Granularity:** 1 row per `QuestionGroup`
 
 Just pulls `Id`. Used only for join validation — ensures group exists and isn't deleted.
 
 ### `QuestionGroupResponse` (lines 438-447)
 **Source:** `QuestionGroupResponse` table  
 **Filter:** `IsDeleted = 0`
+**Granularity:** 1 row per `QuestionGroupResponse`
 
 **Columns:** `Id`, `IdRef`, `Response`, `Compliance`, `AssessmentResponseId`
 
@@ -195,6 +207,7 @@ Just pulls `Id`. Used only for join validation — ensures group exists and isn'
 ### `qa_group_single` (lines 448-491)
 **Source:** `q` JOIN `QuestionGroup` JOIN `QuestionGroupResponse` JOIN `a`  
 **Filter:** `Question_IsMultiSelectType = 0 AND Answer_ComponentStr IS NOT NULL AND Question_Type in (1, 2, 5, 6, 10)`
+**Granularity:** 1 row per grouped single-select `Answer`
 
 **Purpose:** Handles single-select questions that belong to a **Question Group**.
 
@@ -210,6 +223,7 @@ Just pulls `Id`. Used only for join validation — ensures group exists and isn'
 
 ### `qa_group_multi` (lines 492-568)
 **Source:** `qa_multi_json` OUTER APPLY OPENJSON + LEFT JOIN `qq` + JOIN `QuestionGroup` + JOIN `QuestionGroupResponse`
+**Granularity:** 1 row per selected option (`Answer_Id` + option value), grouped
 
 **Same as `qa_multi`** but for grouped questions. Score calculated from `qq`, with group-level joins for validation.
 
@@ -221,6 +235,7 @@ Just pulls `Id`. Used only for join validation — ensures group exists and isn'
 
 ### `qa` (lines 569-587)
 **Source:** UNION of all 6 branches
+**Granularity:** Mixed (answer-level, option-level, and question-no-answer)
 
 ```sql
 select 'single' part, * from qa_single
@@ -240,6 +255,7 @@ select 'no answer' part, * from qa_no_answer
 
 ### `final` (lines 589-701)
 **Source:** `qa`
+**Granularity:** Mixed (same as `qa`)
 
 **Purpose:** Apply display logic — transform raw values into report-friendly values with special handling for edge cases.
 
@@ -260,6 +276,7 @@ select 'no answer' part, * from qa_no_answer
 
 ### `answer_list` (lines 702-713)
 **Source:** `final`
+**Granularity:** Question-level (per `Answer_TenantId` + `Question_AssessmentDomainId` + `Question_Id`)
 
 **Purpose:** Aggregate all response values into a comma-separated list per question.
 
@@ -272,6 +289,7 @@ GROUP BY Answer_TenantId, Question_AssessmentDomainId, Question_Id
 
 ### `main` (lines 714-757)
 **Source:** `final` JOIN `answer_list`
+**Granularity:** Detail rows (same as `final`, with aggregated list attached)
 
 **Purpose:** Attach the aggregated response list to each detail row.
 
@@ -287,6 +305,7 @@ JOIN answer_list al ON al.Answer_TenantId = f.Answer_TenantId
 
 ### Final SELECT (lines 759-761)
 **Source:** `main`
+**Granularity:** Detail rows (same as `main`)
 
 ```sql
 SELECT *, RANK() OVER (ORDER BY Question_Id, COALESCE(AnswerResponse_PK, '')) as QBA_QuestionAnswer_pk
@@ -402,23 +421,23 @@ flowchart LR
 
 ### Silver to CTE Mapping
 
-| Silver Table | Original CTE(s) | Notes |
-|-------------|------------------|-------|
-| `silver_6clicks.answer` | `a_raw`, `a` | Filters + base transforms + answer defaults. |
-| `silver_6clicks.question` | `q_raw`, `q` | Question filters + type/JSON extraction. |
-| `silver_6clicks.question_options` | `qq` | Exploded options for multi-select scoring. |
-| `silver_6clicks.question_group` | `QuestionGroup` | Group existence filter only. |
-| `silver_6clicks.question_group_response` | `QuestionGroupResponse` | Group response metadata. |
+| Silver Table | Original CTE(s) | Granularity | Notes |
+|-------------|------------------|-------------|-------|
+| `silver_6clicks.answer` | `a_raw`, `a` | 1 row per `Answer` | Filters + base transforms + answer defaults. |
+| `silver_6clicks.question` | `q_raw`, `q` | 1 row per `Question` | Question filters + type/JSON extraction. |
+| `silver_6clicks.question_options` | `qq` | 1 row per `Question` option | Exploded options for multi-select scoring. |
+| `silver_6clicks.question_group` | `QuestionGroup` | 1 row per `QuestionGroup` | Group existence filter only. |
+| `silver_6clicks.question_group_response` | `QuestionGroupResponse` | 1 row per `QuestionGroupResponse` | Group response metadata. |
 
 ### Gold Logic (from original CTEs)
 
-| Gold Logic | Original CTE(s) | Purpose |
-|------------|------------------|---------|
-| Multi-select prep | `qa_multi_json` | Join Q+A and wrap multi-select JSON for explode. |
-| Answer branches | `qa_no_answer`, `qa_freetext`, `qa_single`, `qa_multi`, `qa_group_single`, `qa_group_multi` | Build per-type answer rows and scoring. |
-| Union all answers | `qa` | Combine all branches into one stream. |
-| Report shaping | `final` | Apply skip-logic display rules and derived fields. |
-| Aggregation + final output | `answer_list`, `main`, final SELECT | Add response list and surrogate key. |
+| Gold Logic | Original CTE(s) | Granularity | Purpose |
+|------------|------------------|-------------|---------|
+| Multi-select prep | `qa_multi_json` | 1 row per multi-select `Answer` | Join Q+A and wrap multi-select JSON for explode. |
+| Answer branches | `qa_no_answer`, `qa_freetext`, `qa_single`, `qa_multi`, `qa_group_single`, `qa_group_multi` | Mixed (answer, answer-option, question-no-answer) | Build per-type answer rows and scoring. |
+| Union all answers | `qa` | Mixed | Combine all branches into one stream. |
+| Report shaping | `final` | Mixed | Apply skip-logic display rules and derived fields. |
+| Aggregation + final output | `answer_list`, `main`, final SELECT | `answer_list`: question-level ; `main`/final: detail rows | Add response list and surrogate key. |
 
 ### Refresh Flow
 
