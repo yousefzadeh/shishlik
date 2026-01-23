@@ -1,0 +1,5 @@
+aws_region            = "us-west-2"
+aws_profile           = "ib"
+project_name          = "databricks-sandbox"
+environment           = "dev"
+databricks_account_id = "87e28a04-c41a-4a2f-8166-a47f8233bf2b"

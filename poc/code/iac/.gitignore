@@ -1,0 +1,8 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Sensitive - don't commit real values
+# terraform.tfvars  # Uncomment if you put secrets here

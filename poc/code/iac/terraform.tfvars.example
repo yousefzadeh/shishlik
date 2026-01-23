@@ -1,0 +1,6 @@
+# Copy this file to terraform.tfvars and fill in values
+# DO NOT commit terraform.tfvars to git (it's in .gitignore)
+
+aws_region            = "ap-southeast-2"
+project_name          = "shishlik-poc"
+databricks_account_id = "YOUR_DATABRICKS_ACCOUNT_ID"  # Get from accounts.cloud.databricks.com
